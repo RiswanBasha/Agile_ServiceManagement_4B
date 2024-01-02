@@ -10,7 +10,9 @@
 
 **4. Shivakumar Veerapur**
 
-**Steps to run the project:**
+
+
+**<h3>Steps to run the project:</h3>**
 
 1. Clone the project: `git clone https://github.com/RiswanBasha/Agile_ServiceManagement_4B.git`
 2. Install the depedencies: `pip install -r requirements.txt`
