@@ -2,7 +2,7 @@
 
 **1. Riswan Basha Saleem Basha**
 **2. Amith Nair**
-**3. Jishnu Shivaraman****
+**3. Jishnu Shivaraman**
 **4. Shivakumar Veerapur**
 
 **Steps to run the project:**
