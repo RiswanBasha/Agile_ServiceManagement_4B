@@ -1,0 +1,116 @@
+{% extends 'service/customerbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<head>
+  <style media="screen">
+    input[type=text], select,input[type=number] , textarea{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+
+
+  </style>
+
+
+</head>
+
+
+
+<br><br><br><br><br>
+<h1 style="text-align:center;">MAKE REQUEST</h1>
+<div>
+  <form method="post" style="margin-left:200px;margin-right:200px;">
+      {% csrf_token %}
+
+    <label for="project_information">Project Information</label>
+    {% render_field enquiry.project_information class="form-control" placeholder="Project Information" %}<br>
+    
+    <div class="row">
+      <div class="col-md-5">
+          <fieldset class="border border-2 border-primary rounded-3 p-4">
+              <legend class="fs-5 text-primary mb-4">Start Date</legend>
+              <div class="form-group mb-3">
+                  {% render_field enquiry.start_date class="form-control form-control-lg" type="date" %}
+              </div>
+          </fieldset>
+      </div>
+      <div class="col-md-5">
+          <fieldset class="border border-2 border-secondary rounded-3 p-4">
+              <legend class="fs-5 text-secondary mb-4">End Date</legend>
+              <div class="form-group mb-3">
+                  {% render_field enquiry.end_date class="form-control form-control-lg" type="date" %}
+              </div>
+          </fieldset>
+      </div>
+  </div>
+  
+
+    
+    <label for="work_location">Work Location</label>
+    {% render_field enquiry.work_location class="form-control" placeholder="Work Location" %}<br>
+    
+    <label for="contract_period">Contract Period (in months)</label>
+    {% render_field enquiry.contract_period class="form-control" type="number" placeholder="Contract Period" %}<br>
+    
+    <label for="domain">Domain</label>
+    {% render_field enquiry.domain class="form-control" placeholder="Domain" %}<br>
+    
+    <label for="role">Role</label>
+    {% render_field enquiry.role class="form-control" placeholder="Role" %}<br>
+    
+    <label for="experience">Experience</label>
+    {% render_field enquiry.experience class="form-control" %}<br>
+    
+    <label for="technology">Technology</label>
+    {% render_field enquiry.technology class="form-control" placeholder="Technology" %}<br>
+    
+    <label for="further_skills">Further Skills</label>
+    {% render_field enquiry.further_skills class="form-control" placeholder="Further Skills" %}<br>
+    
+    <div class="row">
+      <div class="col-md-5">
+          <fieldset class="border border-2 border-info rounded-3 p-4">
+              <legend class="fs-5 text-info mb-4">Upload Resume</legend>
+              <div class="form-group mb-3">
+                  {% render_field enquiry.upload_resume class="form-control" type="file" %}
+              </div>
+          </fieldset>
+      </div>
+  </div>
+  
+    
+    <label for="onsite_days">Onsite Days</label>
+    {% render_field enquiry.onsite_days class="form-control" type="number" placeholder="Onsite Days" %}<br>
+    
+    <label for="remote_days">Remote Days</label>
+    {% render_field enquiry.remote_days class="form-control" type="number" placeholder="Remote Days" %}
+    
+
+    <input type="submit" value="Submit">
+  </form>
+</div>
+
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock content %}

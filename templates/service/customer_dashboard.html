@@ -1,0 +1,55 @@
+{% extends 'service/customerbase.html' %}
+{% load static %}
+{% block content %}
+
+	<!-- main content -->
+	<div class="wrapper">
+
+<!-- ****** cards start ********** -->
+		<div class="row">
+			<div class="col-3 col-m-6 col-sm-6">
+				<div class="counter bg-primary">
+					<p>
+						<i class="fas fa-tasks"></i>
+					</p>
+					<h3>{{new_request_made}}</h3>
+					<p>New Request Made</p>
+				</div>
+			</div>
+			<!-- <div class="col-3 col-m-6 col-sm-6">
+				<div class="counter bg-warning">
+					<p>
+						<i class="fas fa-spinner"></i>
+					</p>
+					<h3>{{work_in_progress}}</h3>
+					<p>Request In Progress</p>
+				</div>
+			</div> -->
+			<div class="col-3 col-m-6 col-sm-6">
+				<div class="counter bg-success">
+					<p>
+						<i class="fas fa-check-circle"></i>
+					</p>
+					<h3>{{work_completed}}</h3>
+					<p>Completed Request</p>
+				</div>
+			</div>
+			</div>
+		</div><br><br><br><br>
+		<marquee behavior="scroll" direction="left">
+			<img src="{% static "images/db.png" %}" width="120" height="80" alt="db" />
+			<img src="{% static "images/ford.png" %}" width="120" height="80" alt="ford" />
+		   <img src="{% static "images/amazon.png" %}" width="120" height="80" alt="amazon" />
+		   <img src="{% static "images/bosch.png" %}" width="120" height="80" alt="bosch" />
+		   <img src="{% static "images/p&g.png" %}" width="120" height="80" alt="p&g" />
+		   <img src="{% static "images/accenture.png" %}" width="120" height="80" alt="accenture" />
+		   <img src="{% static "images/benz.png" %}" width="120" height="80" alt="benz" />
+		   <img src="{% static "images/bmw.png" %}" width="120" height="80" alt="rolls" />
+		   <img src="{% static "images/suzuki.png" %}" width="120" height="80" alt="suzuki" />
+	 </marquee>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<!-- ****** cards end ********** -->
+
+	</div>
+	<!-- end main content -->
+{% endblock content %}

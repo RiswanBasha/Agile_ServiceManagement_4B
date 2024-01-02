@@ -1,0 +1,80 @@
+{% extends 'service/customerbase.html' %}
+{% block content %}
+
+	<!-- main content -->
+	<div class="wrapper">
+
+<!-- ****** table  start ********** -->
+		<div class="row">
+			<div class="col-12 col-m-12 col-sm-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 style="color:red; text-align:center" >Pending Request & Delete
+						</h3>
+
+					</div>
+					<div class="card-content">
+						<table>
+							<thead>
+                <tr>
+                  <th>Project Information</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Work Location</th>
+                  <th>Contract Period</th>
+				  <th>Domain</th>
+				  <th>Role</th>
+				  <th>Experience</th>
+				  <th>Technology</th>
+				  <th>Further Skills</th>
+				  <th>Upload Resume</th>
+				  <th>Onsite Days</th>
+				  <th>Remote Days</th>
+                  <th>Status</th>
+								  <th>Delete Enquiry</th>
+                </tr>
+							</thead>
+							<tbody>
+                {% for enq in enquiries %}
+                <tr>
+					<td style="max-width: 300px; overflow: auto; text-overflow: ellipsis; white-space: nowrap;">
+						<div style="padding: 5px; margin: 0;">
+							<p style="margin: 0;">{{enq.project_information}}</p>
+						</div>
+					</td>
+					
+                  <td>{{enq.start_date}}</td>
+                  <td>{{enq.end_date}}</td>
+                  <td>{{enq.work_location}}</td>
+                  <td>{{enq.contract_period}}</td>
+				  <td>{{enq.domain}}</td>
+				  <td>{{enq.role}}</td>
+				  <td>{{enq.experience}}</td>
+				  <td>{{enq.technology}}</td>
+				  <td>{{enq.further_skills}}</td>
+				  <td>
+					{% if enq.upload_resume %}
+						<a href="{{ enq.upload_resume.url }}" target="_blank">{{ enq.upload_resume.name }}</a>
+					{% else %}
+						No file uploaded
+					{% endif %}
+				</td>
+				  <td>{{enq.onsite_days}}</td>
+				  <td>{{enq.remote_days}}</td>
+
+                  <td>{{enq.status}}</td>
+                  <td><a style="color:blue; text-decoration:none;font-size:25px;"href="{% url 'customer-delete-request' enq.id  %}">&#10008;</a></td>
+                </tr>
+                {% endfor %}
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+<!-- ****** table start ********** -->
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+	</div>
+	<!-- end main content -->
+{% endblock content %}

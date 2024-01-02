@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+
+
+</head>
+
+<body>
+
+  {% include "service/navbar.html" %}
+  <br><br>
+
+  <center>
+    <h3 class='alert alert-success'>Send Us Your Valuable Feedback !</h3>
+
+    <form method="POST">
+
+      {% csrf_token %}
+      <div class="form-group">
+        <p>
+        <h3>{{ form.as_p }}</h3>
+        </p>
+        <br>
+        <input type="submit" value="Send Message" class='btn btn-primary btn-lg'>
+      </div>
+    </form>
+  </center>
+  <marquee behavior="scroll" direction="left">
+    <img src="{% static "images/db.png" %}" width="120" height="80" alt="db" />
+    <img src="{% static "images/ford.png" %}" width="120" height="80" alt="ford" />
+   <img src="{% static "images/amazon.png" %}" width="120" height="80" alt="amazon" />
+   <img src="{% static "images/bosch.png" %}" width="120" height="80" alt="bosch" />
+   <img src="{% static "images/p&g.png" %}" width="120" height="80" alt="p&g" />
+   <img src="{% static "images/accenture.png" %}" width="120" height="80" alt="accenture" />
+   <img src="{% static "images/benz.png" %}" width="120" height="80" alt="benz" />
+   <img src="{% static "images/bmw.png" %}" width="120" height="80" alt="rolls" />
+   <img src="{% static "images/suzuki.png" %}" width="120" height="80" alt="suzuki" />
+ </marquee>
+  {% include "service/footer.html" %}
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <style media="screen">
+    .jumbotron {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    .jumbotron h1 {
+      text-align: center;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  {% include "service/navbar.html" %}
+  <br><br>
+  <div class="jumbotron" style="margin-bottom:0px;">
+    <h1 class="display-4">Hello</h1>
+    <p class="lead">Welcome to Service Management</p>
+    <hr class="my-4">
+    <p>You can access various features after Login.</p>
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="customersignup" role="button">Create Your Account</a>
+      <a class="btn btn-primary btn-lg" href="customerlogin" role="button">Login</a>
+    </p>
+  </div>
+  <marquee behavior="scroll" direction="left">
+    <img src="{% static "images/db.png" %}" width="120" height="80" alt="db" />
+    <img src="{% static "images/ford.png" %}" width="120" height="80" alt="ford" />
+   <img src="{% static "images/amazon.png" %}" width="120" height="80" alt="amazon" />
+   <img src="{% static "images/bosch.png" %}" width="120" height="80" alt="bosch" />
+   <img src="{% static "images/p&g.png" %}" width="120" height="80" alt="p&g" />
+   <img src="{% static "images/accenture.png" %}" width="120" height="80" alt="accenture" />
+   <img src="{% static "images/benz.png" %}" width="120" height="80" alt="benz" />
+   <img src="{% static "images/bmw.png" %}" width="120" height="80" alt="rolls" />
+   <img src="{% static "images/suzuki.png" %}" width="120" height="80" alt="suzuki" />
+ </marquee>
+  {% include "service/footer.html" %}
+</body>
+
+</html>
