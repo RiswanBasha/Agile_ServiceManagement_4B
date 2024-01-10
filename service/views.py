@@ -486,8 +486,7 @@ def customer_view_approved_offers(request, pk):
 
     return render(request, 'service/customer_view_approved_request_invoice.html', {'enquiry': enquiry})
 
-from django.core.serializers import serialize
-from django.http import HttpResponse
+
 @api_view(['GET'])
 def get_approved_offers_api(request):
     if request.method == 'GET':
