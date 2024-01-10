@@ -3,7 +3,6 @@ Django
 django-widget-tweaks
 pytz
 sqlparse
-djangorestframework drf-yasg
 drf-yasg
 django-rest-swagger
 djangorestframework
