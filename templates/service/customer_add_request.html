@@ -42,6 +42,19 @@
   <form method="post" style="margin-left:200px;margin-right:200px;">
       {% csrf_token %}
 
+
+      <label for="id_agreement_title">Agreement Title:</label>
+      <select name="agreement_title" id="id_agreement_title">
+          {% for value, label in enquiry.agreement_title.field.choices %}
+              {% if value == enquiry.instance.agreement_title %}
+                  <option value="{{ value }}" selected>{{ label }}</option>
+              {% else %}
+                  <option value="{{ value }}">{{ label }}</option>
+              {% endif %}
+          {% endfor %}
+      </select>
+      
+
     <label for="project_information">Project Information</label>
     {% render_field enquiry.project_information class="form-control" placeholder="Project Information" %}<br>
     

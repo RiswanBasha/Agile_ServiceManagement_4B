@@ -28,7 +28,30 @@ SECRET_KEY = 'ftxnh_7475z^joy_*l9t*qnqow!@)y#(541^w1=(8--=3g#4*d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '7d6b-141-2-222-21.ngrok-free.app',
+    'localhost',
+    '127.0.0.1',
+    # ... other allowed hosts
+]
+
+REST_FRAMEWORK = {    
+    'DEFAULT_PERMISSION_CLASSES': (
+       'rest_framework.permissions.AllowAny',
+    ),
+}
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+    # Other settings...
+}
 
 
 # Application definition
@@ -42,6 +65,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'service',
     'widget_tweaks',
+    'rest_framework_swagger',       # Swagger 
+    'rest_framework',               # Django rest framework
+    'drf_yasg',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [

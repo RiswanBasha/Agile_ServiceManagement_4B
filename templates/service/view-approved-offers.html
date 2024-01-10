@@ -1,0 +1,47 @@
+{% extends 'service/customerbase.html' %}
+{% block content %}
+    <!-- main content -->
+    <div class="wrapper">
+        <!-- ****** table start ********** -->
+        <div class="row">
+            <div class="col-12 col-m-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color:red; text-align:center">Requests and Offers</h3>
+                    </div>
+                    <div class="card-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Agreement Title</th>
+                                    <th>Project Information</th>
+                                    <th>Status</th>
+                                    <th>Budget</th>
+                                    <th>Offer</th>
+                                    <th>Accept</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for enq in enquiries %}
+                                    <tr>
+                                        <td>{{ enq.agreement_title}}</td>
+                                        <td>{{ enq.project_information }}</td>
+                                        <td>{{ enq.status }}</td>
+                                        <td>{{ enq.cost }}</td>
+                                        <td>{{ enq.offer }}</td>
+                                        <!-- Accept button with form -->
+                                    
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ****** table end ********** -->
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+    <!-- end main content -->
+{% endblock content %}

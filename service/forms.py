@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-
+from .models import Request
+import requests
 class CustomerUserForm(forms.ModelForm):
     class Meta:
         model=User
@@ -37,6 +38,7 @@ class RequestForm(forms.ModelForm):
     class Meta:
         model=models.Request
         fields = [
+            'agreement_title',
             'project_information',
             'start_date',
             'end_date',
@@ -54,7 +56,22 @@ class RequestForm(forms.ModelForm):
         widgets = {
         'project_information':forms.Textarea(attrs={'rows': 3, 'cols': 30})
         }
+    def __init__(self, *args, **kwargs):
+        super(RequestForm, self).__init__(*args, **kwargs)
 
+        # Fetch agreement titles from the API and populate the dropdown
+        api_url = "http://35.174.107.106:3000/agreement/"  # URL without {id}
+        try:
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                agreement_titles = response.json()
+                choices = [(title['id'], title['title']) for title in agreement_titles]
+                self.fields['agreement_title'].choices = [('', 'Select Agreement Title')] + choices
+            else:
+                print(f"Failed to fetch agreement titles. Status code: {response.status_code}")
+        except requests.RequestException as e:
+            print(f"Error fetching agreement titles: {e}")
+            
 class AdminRequestForm(forms.Form):
     #to_field_name value will be stored when form is submitted.....__str__ method of customer model will be shown there in html
     customer=forms.ModelChoiceField(queryset=models.Customer.objects.all(),empty_label="Customer Name",to_field_name='id')

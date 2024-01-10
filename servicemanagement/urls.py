@@ -1,12 +1,28 @@
-"""
-
-"""
 from django.contrib import admin
-from django.urls import path
-from  service import views
-from django.contrib.auth.views import LoginView,LogoutView
+from django.urls import path, include
+from service import views
+from django.contrib.auth.views import LoginView, LogoutView
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework_swagger.views import get_swagger_view
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+from django.conf import settings
+from django.conf.urls.static import static
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Service Request API",
+        default_version='v1',
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
 
     path('',views.home_view,name=''),
@@ -67,7 +83,12 @@ urlpatterns = [
     path('customer-feedback', views.customer_feedback_view,name='customer-feedback'),
     path('customer-invoice', views.customer_invoice_view,name='customer-invoice'),
     path('customer-view-request',views.customer_view_request_view,name='customer-view-request'),
+    path('request-details/', views.get_all_enquiries, name='get_all_enquiries'),
+    path('specific-request-details/<int:request_id>/', views.get_specific_request, name='get_specific_request'),
     path('customer-delete-request/<int:pk>', views.customer_delete_request_view,name='customer-delete-request'),
+    #path('customer-accept-offer/<int:pk>/', views.customer_accept_offer_view, name='customer-view-approved-offers'),
+    path('customer-view-approved-offers/<int:pk>/', views.customer_view_approved_offers, name='customer-view-approved-offers'),
+    path('approved-offers', views.get_approved_offers_api, name='approved-offers'),
     path('customer-view-approved-request',views.customer_view_approved_request_view,name='customer-view-approved-request'),
     path('customer-view-approved-request-invoice',views.customer_view_approved_request_invoice_view,name='customer-view-approved-request-invoice'),
 
@@ -76,4 +97,11 @@ urlpatterns = [
 
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),
+
+    path('docs', schema_view.with_ui('swagger', cache_timeout=0),
+         name='schema-swagger-ui'),  #<-- Here
+    path('redoc', schema_view.with_ui('redoc', cache_timeout=0),
+         name='schema-redoc'),  #<-- Here
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

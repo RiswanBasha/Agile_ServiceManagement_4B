@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import requests
 # Create your models here.
 class Customer(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
@@ -31,28 +32,16 @@ class offer(models.Model):
     def __str__(self):
         return self.employee_name
 
+# Define a model for approved offers
+class ApprovedOffer(models.Model):
+    agreement_title = models.CharField(max_length=100)
+    project_information = models.TextField()
+    status = models.CharField(max_length=50)
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    # Add other fields as needed
+
 
 class Request(models.Model):
-    # cat=(('two wheeler with gear','two wheeler with gear'),('two wheeler without gear','two wheeler without gear'),('three wheeler','three wheeler'),('four wheeler','four wheeler'))
-    # category=models.CharField(max_length=50,choices=cat)
-
-    # _no=models.PositiveIntegerField(null=False)
-    # _name = models.CharField(max_length=40,null=False)
-    # _model = models.CharField(max_length=40,null=False)
-    # _brand = models.CharField(max_length=40,null=False)
-
-    # problem_description = models.CharField(max_length=500,null=False)
-    # date=models.DateField(auto_now=True)
-    # cost=models.PositiveIntegerField(null=True)
-
-    # customer=models.ForeignKey('Customer', on_delete=models.CASCADE,null=True)
-    # offer=models.ForeignKey('offer',on_delete=models.CASCADE,null=True)
-
-    # stat=(('Pending','Pending'),('Approved','Approved'),('Repairing','Repairing'),('Repairing Done','Repairing Done'),('Released','Released'))
-    # status=models.CharField(max_length=50,choices=stat,default='Pending',null=True)
-
-    # def __str__(self):
-    #     return self.problem_description
     cat=(('0-2','0-2'),('2-5','2-5'),('5-7','5-7'),('7+','7+'))
     project_information = models.CharField(max_length=1000,null=True)
     start_date = models.DateField(null=True)
@@ -70,8 +59,9 @@ class Request(models.Model):
     customer=models.ForeignKey('Customer', on_delete=models.CASCADE,null=True)
     offer=models.ForeignKey('offer',on_delete=models.CASCADE,null=True)
     cost=models.PositiveIntegerField(null=True)
-    stat=(('Pending','Pending'),('Approved','Approved'),('In-Progress','In-Progress'),('Repairing Done','Repairing Done'),('Released','Released'))
+    stat=(('Pending','Pending'),('Released','Released'))
     status=models.CharField(max_length=50,choices=stat,default='Pending',null=True)
+    agreement_title = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return self.project_information

@@ -1,4 +1,6 @@
-from django.shortcuts import render,redirect,reverse
+import datetime
+from django.shortcuts import get_object_or_404, render,redirect,reverse
+import requests
 from service import forms,models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
@@ -6,6 +8,17 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
 from django.db.models import Q
+from django.http import JsonResponse
+import json
+import os
+from django.core.serializers.json import DjangoJSONEncoder
+from django.conf import settings  # Import settings module
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib import messages
 
 def home_view(request):
     if request.user.is_authenticated:
@@ -31,7 +44,6 @@ def adminclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return HttpResponseRedirect('adminlogin')
-
 
 def customer_signup_view(request):
     userForm=forms.CustomerUserForm()
@@ -461,6 +473,59 @@ def customer_delete_request_view(request,pk):
     enquiry.delete()
     return redirect('customer-view-request')
 
+
+@login_required(login_url='customerlogin')
+@user_passes_test(is_customer)
+def customer_view_approved_offers(request, pk):
+    if request.method == 'POST':
+        enquiry=models.Request.objects.get(id=pk)
+        enquiry.status = 'Approved'
+        enquiry.save()
+        messages.success(request, 'Status changed to Approved.')
+
+
+    return render(request, 'service/customer_view_approved_request_invoice.html', {'enquiry': enquiry})
+
+from django.core.serializers import serialize
+from django.http import HttpResponse
+@api_view(['GET'])
+def get_approved_offers_api(request):
+    if request.method == 'GET':
+        approved_offers = models.Request.objects.filter(status='Approved')  # Fetch all approved offers
+
+        # Manually construct JSON data from the queryset
+        all_offer_data = []
+        for offer in approved_offers:
+            offer_data = {
+                    'id': offer.id,
+                    'project_information': offer.project_information,
+                    'start_date': offer.start_date,
+                    'end_date': offer.end_date,
+                    'agreement_title':offer.agreement_title,
+                    'budget':offer.cost,
+                    'status':offer.status,
+                    'customer': {
+                        'id': offer.customer.id,
+                        'user': offer.customer.get_name
+                        # Include other relevant fields from User model
+                    },
+                    'offer': {
+                        'id': offer.offer.id,
+                        'provider_name': offer.offer.provider_name,  # Include relevant fields from Offer model
+                        # Add other fields from Offer model if needed
+                        'employee_name':offer.offer.employee_name
+                    }
+                # Add
+                    # Add other fields here as needed
+                }
+            all_offer_data.append(offer_data)
+            
+        if request.accepted_renderer.format == 'json':
+            data = {'all_offers': all_offer_data}
+            return JsonResponse(data)
+        return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_request_view(request):
@@ -485,19 +550,123 @@ def customer_view_approved_request_invoice_view(request):
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_add_request_view(request):
-    customer=models.Customer.objects.get(user_id=request.user.id)
-    enquiry=forms.RequestForm()
-    if request.method=='POST':
-        enquiry=forms.RequestForm(request.POST)
+    customer = models.Customer.objects.get(user_id=request.user.id)
+    if request.method == 'POST':
+        enquiry = forms.RequestForm(request.POST)
         if enquiry.is_valid():
-            customer=models.Customer.objects.get(user_id=request.user.id)
-            enquiry_x=enquiry.save(commit=False)
-            enquiry_x.customer=customer
+            enquiry_x = enquiry.save(commit=False)
+            enquiry_x.customer = customer
+            
+            # Fetch agreement title based on the selected ID
+            agreement_id = enquiry.cleaned_data.get('agreement_title')  # Assuming the field name is 'agreement_title'
+            if agreement_id:
+                api_url = f"http://35.174.107.106:3000/agreement/{agreement_id}"
+                try:
+                    response = requests.get(api_url)
+                    if response.status_code == 200:
+                        agreement_data = response.json()
+                        fetched_title = agreement_data.get('title')
+                        enquiry_x.agreement_title = fetched_title  # Set the fetched title to the Request object
+                    else:
+                        print(f"Failed to fetch agreement title. Status code: {response.status_code}")
+                except requests.RequestException as e:
+                    print(f"Error fetching agreement title: {e}")
+
             enquiry_x.save()
+            return HttpResponseRedirect('customer-dashboard')
         else:
-            print("form is invalid")
-        return HttpResponseRedirect('customer-dashboard')
-    return render(request,'service/customer_add_request.html',{'enquiry':enquiry,'customer':customer})
+            print("Form is invalid")
+    else:
+        enquiry = forms.RequestForm()
+
+    return render(request, 'service/customer_add_request.html', {'enquiry': enquiry, 'customer': customer})
+
+
+
+@api_view(['GET'])
+@login_required(login_url='customerlogin')
+@user_passes_test(is_customer)
+def get_all_enquiries(request):
+    try:
+        customer = models.Customer.objects.get(user_id=request.user.id)
+        enquiries = models.Request.objects.filter(customer=customer)
+        
+        # Prepare the list to hold all enquiry data
+        all_enquiries_data = []
+        for enquiry in enquiries:
+            enquiry_data = {
+                'id': enquiry.id,
+                'agreement_title':enquiry.agreement_title,
+                'project_information': enquiry.project_information,
+                'start_date': enquiry.start_date,
+                'end_date': enquiry.end_date,
+                'work_location': enquiry.work_location,
+                'contract_period': enquiry.contract_period,
+                'domain': enquiry.domain,
+                'role': enquiry.role,
+                'experience': enquiry.experience,
+                'technology': enquiry.technology,
+                'further_skills': enquiry.further_skills,
+                'upload_resume': enquiry.upload_resume.url if enquiry.upload_resume else None,
+                'onsite_days': enquiry.onsite_days,
+                'remote_days': enquiry.remote_days,
+                'status': enquiry.status,
+                'customer_id': enquiry.customer.id,
+                # Include other fields as needed
+            }
+            all_enquiries_data.append(enquiry_data)
+
+        if request.accepted_renderer.format == 'json':
+            data = {'enquiries': all_enquiries_data}
+            return JsonResponse(data)
+        else:
+            return render(request, 'service/all_enquiries.html', {'enquiries': all_enquiries_data, 'customer': customer})
+    except models.Customer.DoesNotExist:
+        return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@login_required(login_url='customerlogin')
+@user_passes_test(is_customer)
+def get_specific_request(request, request_id):
+    try:
+        customer = models.Customer.objects.get(user_id=request.user.id)
+        enquiry = models.Request.objects.get(id=request_id, customer=customer)
+        
+        # Prepare data for the specific enquiry
+        enquiry_data = {
+            'id': enquiry.id,
+            'agreement_title': enquiry.agreement_title,
+            'project_information': enquiry.project_information,
+            'start_date': enquiry.start_date,
+            'end_date': enquiry.end_date,
+            'work_location': enquiry.work_location,
+            'contract_period': enquiry.contract_period,
+            'domain': enquiry.domain,
+            'role': enquiry.role,
+            'experience': enquiry.experience,
+            'technology': enquiry.technology,
+            'further_skills': enquiry.further_skills,
+            'upload_resume': enquiry.upload_resume.url if enquiry.upload_resume else None,
+            'onsite_days': enquiry.onsite_days,
+            'remote_days': enquiry.remote_days,
+            'status': enquiry.status,
+            'customer_id': enquiry.customer.id,
+            # Include other fields as needed
+        }
+
+        if request.accepted_renderer.format == 'json':
+            data = {'enquiry': enquiry_data}
+            return JsonResponse(data)
+        else:
+            # Here, generate the specific URL for this enquiry
+            specific_url = f"/enquiries/{request_id}/"  # Replace this with your actual URL structure
+            return render(request, 'service/specific_enquiry.html', {'enquiry': enquiry_data, 'specific_url': specific_url, 'customer': customer})
+    except models.Customer.DoesNotExist:
+        return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+    except models.Request.DoesNotExist:
+        return JsonResponse({'error': 'Request not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 @login_required(login_url='customerlogin')
@@ -548,6 +717,7 @@ def customer_feedback_view(request):
             print("form is invalid")
         return render(request,'service/feedback_sent_by_customer.html',{'customer':customer})
     return render(request,'service/customer_feedback.html',{'feedback':feedback,'customer':customer})
+
 #============================================================================================
 # CUSTOMER RELATED views END
 #============================================================================================
@@ -569,3 +739,4 @@ def contactus_view(request):
             send_mail(str(name)+' || '+str(email),message,settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVING_USER, fail_silently = False)
             return render(request, '/contactussuccess.html')
     return render(request, 'service/contactus.html', {'form':sub})
+

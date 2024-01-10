@@ -17,6 +17,7 @@
 						<table>
 							<thead>
                 <tr>
+				  <th>Agreement Name</th>
                   <th>Project Information</th>
                   <th>Start Date</th>
                   <th>End Date</th>
@@ -37,11 +38,17 @@
 							<tbody>
                 {% for enq in enquiries %}
                 <tr>
+					<td>{{enq.agreement_title}}</td>
 					<td style="max-width: 300px; overflow: auto; text-overflow: ellipsis; white-space: nowrap;">
 						<div style="padding: 5px; margin: 0;">
 							<p style="margin: 0;">{{enq.project_information}}</p>
 						</div>
 					</td>
+					{% if enq.agreement_title %}
+					<script>
+						console.log("Agreement Title: {{ enq.agreement_title }}");
+					</script>
+					{% endif %}
 					
                   <td>{{enq.start_date}}</td>
                   <td>{{enq.end_date}}</td>
