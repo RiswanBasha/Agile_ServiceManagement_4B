@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIR=os.path.join(BASE_DIR,'static')
 MEDIA_ROOT=os.path.join(BASE_DIR,'static')
-
+STATIC_ROOT=os.path.join(BASE_DIR,'staticfiles_build','static')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -29,7 +29,8 @@ SECRET_KEY = 'ftxnh_7475z^joy_*l9t*qnqow!@)y#(541^w1=(8--=3g#4*d'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '7d6b-141-2-222-21.ngrok-free.app',
+    '.vercel.app',
+    '.now.sh',
     'localhost',
     '127.0.0.1',
     # ... other allowed hosts
