@@ -8,3 +8,4 @@ django-rest-swagger
 djangorestframework
 django
 psycopg2-binary
+Pillow
