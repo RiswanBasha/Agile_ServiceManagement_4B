@@ -7,6 +7,4 @@ drf-yasg
 django-rest-swagger
 djangorestframework
 django
-psycopg2
-psycopg
 psycopg2-binary
