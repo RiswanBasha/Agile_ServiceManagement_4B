@@ -114,13 +114,14 @@ WSGI_APPLICATION = 'servicemanagement.wsgi.application'
 #  }
 # }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'servicemanagement',
-        'USER': 'default',
-        'PASSWORD': '4tDIKl1pHFaC',
-        'HOST': 'ep-cold-waterfall-98210354-pooler.eu-central-1.postgres.vercel-storage.com', 
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'servicemanagement',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'riswan2000',
+    #     'HOST': 'localhost',
+    #     'PORT': '5432',  
+    # }
 }
 
 # Password validation
