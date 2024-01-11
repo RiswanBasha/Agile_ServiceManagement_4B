@@ -1,28 +1,33 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "servicemanagement/wsgi.py",
-        "use": "@vercel/python",
-        "config": { "maxLambdaSize": "250mb", "runtime": "python" }
-      },
-      {
-        "src": "build_files.sh",
-        "use": "@vercel/static-build",
-        "config": {
-          "distDir": "staticfiles_build"
+  "version": 2,
+  "builds": [
+    {
+      "src": "servicemanagement/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "250mb",
+        "runtime": "python3.10",
+        "env": {
+          "DJANGO_SETTINGS_MODULE": "servicemanagement.settings"
         }
       }
-    ],
-    "routes": [
-      {
-        "src": "/static/(.*)",
-        "dest": "/static/$1"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "servicemanagement/wsgi.py"
+    },
+    {
+      "src": "build_files.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles_build"
       }
-    ]
-  }
-  
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "servicemanagement/wsgi.py"
+    }
+  ]
+}
