@@ -119,7 +119,6 @@ DATABASES = {
         'NAME': 'servicemanagement',
         'USER': 'postgres',
         'PASSWORD': 'riswan2000',
-        'HOST': 'localhost',
         'PORT': '5432',  
     }
 }
