@@ -117,8 +117,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'servicemanagement',
-        'USER': 'postgres',
-        'PASSWORD': 'riswan2000',
+        'USER': 'default',
+        'PASSWORD': '4tDIKl1pHFaC',
+        'HOST': 'ep-cold-waterfall-98210354-pooler.eu-central-1.postgres.vercel-storage.com', 
     }
 }
 
