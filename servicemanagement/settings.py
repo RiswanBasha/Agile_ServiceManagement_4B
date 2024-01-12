@@ -29,13 +29,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '.vercel.app',
-    '.now.sh',
-    'localhost',
-    '127.0.0.1',
-    # ... other allowed hosts
-]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '13.48.42.106']
+
 
 REST_FRAMEWORK = {    
     'DEFAULT_PERMISSION_CLASSES': (
