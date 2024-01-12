@@ -583,12 +583,9 @@ def customer_add_request_view(request):
 
 
 @api_view(['GET'])
-@login_required(login_url='customerlogin')
-@user_passes_test(is_customer)
 def get_all_enquiries(request):
     try:
-        customer = models.Customer.objects.get(user_id=request.user.id)
-        enquiries = models.Request.objects.filter(customer=customer)
+        enquiries = models.Request.objects.all()
         
         # Prepare the list to hold all enquiry data
         all_enquiries_data = []
@@ -610,8 +607,8 @@ def get_all_enquiries(request):
                 'onsite_days': enquiry.onsite_days,
                 'remote_days': enquiry.remote_days,
                 'status': enquiry.status,
-                'customer_id': enquiry.customer.id,
-                # Include other fields as needed
+                'customer_id': enquiry.customer.id if enquiry.customer else None,
+            # Include other fields as needed
             }
             all_enquiries_data.append(enquiry_data)
 
@@ -623,13 +620,12 @@ def get_all_enquiries(request):
     except models.Customer.DoesNotExist:
         return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
 
+
+
 @api_view(['GET'])
-@login_required(login_url='customerlogin')
-@user_passes_test(is_customer)
 def get_specific_request(request, request_id):
     try:
-        customer = models.Customer.objects.get(user_id=request.user.id)
-        enquiry = models.Request.objects.get(id=request_id, customer=customer)
+        enquiry = get_object_or_404(models.Request, id=request_id)
         
         # Prepare data for the specific enquiry
         enquiry_data = {
@@ -649,7 +645,7 @@ def get_specific_request(request, request_id):
             'onsite_days': enquiry.onsite_days,
             'remote_days': enquiry.remote_days,
             'status': enquiry.status,
-            'customer_id': enquiry.customer.id,
+            'customer_id': enquiry.customer.id if enquiry.customer else None,
             # Include other fields as needed
         }
 
