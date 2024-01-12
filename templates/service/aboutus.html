@@ -7,51 +7,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <style media="screen">
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
     .jumbotron {
-      margin-top: 0px;
-      margin-bottom: 0px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8f9fa; /* Light gray background */
+      padding: 80px 20px;
+      text-align: center;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     }
 
     .jumbotron h1 {
-      text-align: center;
+      font-size: 2.5em;
+      color: #007bff; /* Blue heading color */
     }
 
-    .alert {
-      margin: 0px;
+    .jumbotron p {
+      font-size: 1.2em;
+      color: #495057; /* Dark gray text color */
+    }
+
+    .developers-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin-top: 40px;
+    }
+
+    .developer-card {
+      text-align: center;
+      margin: 20px;
+    }
+
+    .developer-card img {
+      border-radius: 50%;
+      margin-top: 10px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .developer-card p {
+      font-size: 1em;
+      color: #495057; /* Dark gray text color */
+      margin-top: 8px; /* Adjusted margin */
+    }
+
+    .developer-card p strong {
+      font-weight: bold;
+      color: #007bff; /* Blue name color */
+    }
+
+    .jumbotron hr {
+      border-color: #007bff; /* Blue hr color */
+      width: 50%;
+      margin: 20px 0;
+    }
+
+    .jumbotron a {
+      color: #fff;
+    }
+
+    .jumbotron a:hover {
+      text-decoration: none;
+    }
+
+    marquee {
+      margin-top: 20px;
+    }
+
+    marquee img {
+      margin: 0 10px;
+    }
+
+    .footer {
+      background-color: #343a40; /* Dark background color */
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
     }
   </style>
 
-  <title></title>
+  <title>About Us</title>
 </head>
 
 <body>
 
   {% include "service/navbar.html" %}
-  <br><br>
-  <center>
-    <h3 class='alert alert-success' style="margin-bottom:0px;">About Us !</h3>
-  </center>
-  <div class="jumbotron" style="margin-bottom: 0px;margin-top: 0px;">
-    <h1 class="display-4">Hello !!</h1>
-    <p class="lead">Service Management Portal</p>
-    <hr class="my-4">
-    <p>Explore our Website.</p>
+  <div class="jumbotron">
+    <h1 class="display-4">Service Management Portal</h1>
+    <p class="lead">Developed by Team 4B</p>
+    <p>Welcome to our Service Request Portal, a centralized platform designed to streamline and simplify the process of managing service requests. Whether you are a customer seeking assistance or a service provider handling requests, our portal is dedicated to enhancing the efficiency and effectiveness of service interactions.</p>
+
+    <!-- Developers Section -->
+    <div class="developers-section">
+      <!-- Developer 1 -->
+      <div class="developer-card">
+        <img src="{% static "images/riswan.jpeg" %}" width="150" height="150" alt="Developer 1" />
+        <p><strong>Riswan Basha</strong></p>
+      </div>
+
+      <!-- Developer 2 -->
+      <div class="developer-card">
+        <img src="{% static "images/amith.jpg" %}" width="150" height="150" alt="Developer 2" />
+        <p><strong>Amith Nair</strong></p>
+      </div>
+
+      <!-- Developer 3 -->
+      <div class="developer-card">
+        <img src="{% static "images/jishnu.jpg" %}" width="150" height="150" alt="Developer 3" />
+        <p><strong>Jishnu Shivaraman</strong></p>
+      </div>
+
+      <!-- Developer 4 -->
+      <div class="developer-card">
+        <img src="{% static "images/shiva.jpg" %}" width="150" height="150" alt="Developer 4" />
+        <p><strong>Shivakumar Veerapur</strong></p>
+      </div>
+
+      <!-- Developer 5 -->
+      <div class="developer-card">
+        <img src="{% static "images/vasanth.jpg" %}" width="150" height="150" alt="Developer 5" />
+        <p><strong>Vasanthakumar</strong></p>
+      </div>
+    </div>
     <p class="lead">
       <a class="btn btn-primary btn-lg" href="/" role="button">HOME</a>
     </p>
+    <marquee behavior="scroll" direction="left">
+      <img src="{% static "images/db.png" %}" width="120" height="80" alt="db" />
+      <img src="{% static "images/ford.png" %}" width="120" height="80" alt="ford" />
+      <img src="{% static "images/amazon.png" %}" width="120" height="80" alt="amazon" />
+      <img src="{% static "images/bosch.png" %}" width="120" height="80" alt="bosch" />
+      <img src="{% static "images/p&g.png" %}" width="120" height="80" alt="p&g" />
+      <img src="{% static "images/accenture.png" %}" width="120" height="80" alt="accenture" />
+      <img src="{% static "images/benz.png" %}" width="120" height="80" alt="benz" />
+      <img src="{% static "images/bmw.png" %}" width="120" height="80" alt="rolls" />
+      <img src="{% static "images/suzuki.png" %}" width="120" height="80" alt="suzuki" />
+    </marquee>
   </div>
-  <marquee behavior="scroll" direction="left">
-    <img src="{% static "images/db.png" %}" width="120" height="80" alt="db" />
-    <img src="{% static "images/ford.png" %}" width="120" height="80" alt="ford" />
-     <img src="{% static "images/amazon.png" %}" width="120" height="80" alt="amazon" />
-     <img src="{% static "images/bosch.png" %}" width="120" height="80" alt="bosch" />
-     <img src="{% static "images/p&g.png" %}" width="120" height="80" alt="p&g" />
-     <img src="{% static "images/accenture.png" %}" width="120" height="80" alt="accenture" />
-     <img src="{% static "images/benz.png" %}" width="120" height="80" alt="benz" />
-     <img src="{% static "images/bmw.png" %}" width="120" height="80" alt="rolls" />
-     <img src="{% static "images/suzuki.png" %}" width="120" height="80" alt="suzuki" />
- </marquee>
-  {% include "service/footer.html" %}
+    {% include "service/footer.html" %}
 </body>
 
 </html>
