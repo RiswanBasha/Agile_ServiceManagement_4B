@@ -519,9 +519,8 @@ def get_approved_offers_api(request):
                 }
             all_offer_data.append(offer_data)
             
-        if request.accepted_renderer.format == 'json':
-            data = {'all_offers': all_offer_data}
-            return JsonResponse(data)
+
+            return JsonResponse(all_offer_data, safe=False)
         return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -612,11 +611,7 @@ def get_all_enquiries(request):
             }
             all_enquiries_data.append(enquiry_data)
 
-        if request.accepted_renderer.format == 'json':
-            data = {'enquiries': all_enquiries_data}
-            return JsonResponse(data)
-        else:
-            return render(request, 'service/all_enquiries.html', {'enquiries': all_enquiries_data, 'customer': customer})
+        return JsonResponse(all_enquiries_data, safe=False)
     except models.Customer.DoesNotExist:
         return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -650,7 +645,7 @@ def get_specific_request(request, request_id):
         }
 
         if request.accepted_renderer.format == 'json':
-            data = {'enquiry': enquiry_data}
+            data = enquiry_data
             return JsonResponse(data)
         else:
             # Here, generate the specific URL for this enquiry
