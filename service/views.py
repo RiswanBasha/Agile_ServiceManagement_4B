@@ -564,6 +564,8 @@ def customer_add_request_view(request):
                     if response.status_code == 200:
                         agreement_data = response.json()
                         fetched_title = agreement_data.get('title')
+                        fetched_id = agreement_data.get('id')
+                        enquiry_x.agreement_title_id = fetched_id
                         enquiry_x.agreement_title = fetched_title  # Set the fetched title to the Request object
                     else:
                         print(f"Failed to fetch agreement title. Status code: {response.status_code}")
@@ -592,6 +594,7 @@ def get_all_enquiries(request):
             enquiry_data = {
                 'id': enquiry.id,
                 'agreement_title':enquiry.agreement_title,
+                'agreement_title_id':enquiry.agreement_title_id,
                 'project_information': enquiry.project_information,
                 'start_date': enquiry.start_date,
                 'end_date': enquiry.end_date,
@@ -626,6 +629,7 @@ def get_specific_request(request, request_id):
         enquiry_data = {
             'id': enquiry.id,
             'agreement_title': enquiry.agreement_title,
+            'agreement_title_id':enquiry.agreement_title_id,
             'project_information': enquiry.project_information,
             'start_date': enquiry.start_date,
             'end_date': enquiry.end_date,

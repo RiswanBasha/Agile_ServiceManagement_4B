@@ -62,7 +62,7 @@ class Request(models.Model):
     stat=(('Pending','Pending'),('Released','Released'))
     status=models.CharField(max_length=50,choices=stat,default='Pending',null=True)
     agreement_title = models.CharField(max_length=100, null=True)
-
+    agreement_title_id = models.PositiveIntegerField(null=True)
     def __str__(self):
         return self.project_information
 
