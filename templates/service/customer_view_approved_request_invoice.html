@@ -36,14 +36,14 @@
                                         <td>{{enq.status}}</td>
                                         <!-- Accept button with form -->
                                         <td>
-                                            <form class="accept-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-view-approved-offers' enq.agreement_title_id %}">
+                                            <form class="accept-form" data-id="{{ enq.agreement_title_id }}" method="post" action="{% url 'customer-view-approved-offers' enq.agreement_title_id %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="accept-btn" style="color:green; text-decoration:none;font-size:25px;" onclick="return confirm('Are you sure you want to accept this offer?');">&#10003;</button>
                                             </form>
                                         </td>
                                         <!-- Delete button -->
                                         <td>
-                                            <form class="delete-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-delete-request' enq.agreement_title_id %}">
+                                            <form class="delete-form" data-id="{{ enq.agreement_title_id }}" method="post" action="{% url 'customer-delete-request' enq.agreement_title_id %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="delete-btn" style="color:blue; text-decoration:none;font-size:25px;" onclick="return confirm('Are you sure you want to delete this?');">&#10008;</button>
                                             </form>
