@@ -542,6 +542,8 @@ def customer_view_approved_request_view(request):
     enquiries=models.Request.objects.all().filter(customer_id=customer.id).exclude(status='Pending')
     return render(request,'service/customer_view_approved_request.html',{'customer':customer,'enquiries':enquiries})
 
+
+from django.db import IntegrityError
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_request_invoice_view(request):
@@ -552,23 +554,27 @@ def customer_view_approved_request_invoice_view(request):
         # Parse the JSON response
         offers_data = response.json()
 
-        # Save data into the model
+    # Save data into the model
         for offer in offers_data:
-            # Create and save the model instance
-            models.offer_from_api.objects.create(
-                agreement_title_id=offer.get('agreement_title_id'),
-                agreement_title=offer.get('agreement_title'),
-                project_information=offer.get('project_information'),
-                employee_name=offer.get('employee_name'),
-                provider_name=offer.get('provider_name'),
-                contactperson=offer.get('contactperson'),
-                externalperson=offer.get('externalperson'),
-                rate=offer.get('rate'),
-                notes=offer.get('notes'),
-                document=offer.get('document'),
-                status=offer.get('status'),
-                v=offer.get('__v'),
-            )
+            try:
+                # Try to create the model instance
+                models.offer_from_api.objects.create(
+                    agreement_title_id=offer.get('agreement_title_id'),
+                    agreement_title=offer.get('agreement_title'),
+                    project_information=offer.get('project_information'),
+                    employee_name=offer.get('employee_name'),
+                    provider_name=offer.get('provider_name'),
+                    contactperson=offer.get('contactperson'),
+                    externalperson=offer.get('externalperson'),
+                    rate=offer.get('rate'),
+                    notes=offer.get('notes'),
+                    document=offer.get('document'),
+                    status=offer.get('status'),
+                    v=offer.get('__v'),
+                )
+            except IntegrityError:
+                # Handle the case where the record already exists
+                pass
     else:
         # Handle the error, for example, display an error message
         offers_data = []
