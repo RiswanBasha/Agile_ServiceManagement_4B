@@ -32,6 +32,24 @@ class offer(models.Model):
     def __str__(self):
         return self.employee_name
 
+class offer_from_api(models.Model):
+    agreement_title_id = models.CharField(max_length=255, unique=True)
+    agreement_title = models.CharField(max_length=255)
+    project_information = models.TextField()
+    employee_name = models.CharField(max_length=255)
+    provider_name = models.CharField(max_length=255)
+    contactperson = models.CharField(max_length=255)
+    externalperson = models.CharField(max_length=255)
+    rate = models.DecimalField(max_digits=10, decimal_places=2)
+    dateuntil = models.DateTimeField()
+    notes = models.TextField()
+    document = models.TextField()
+    status = models.CharField(max_length=255)
+    v = models.IntegerField()
+
+    def __str__(self):
+        return self.agreement_title_id
+
 # Define a model for approved offers
 class ApprovedOffer(models.Model):
     agreement_title = models.CharField(max_length=100)

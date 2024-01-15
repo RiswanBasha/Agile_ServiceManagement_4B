@@ -485,15 +485,15 @@ def customer_delete_request_view(request,pk):
 
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
-def customer_view_approved_offers(request, pk):
+def customer_view_approved_offers(request, agreement_title_id):
     if request.method == 'POST':
-        enquiry=models.Request.objects.get(id=pk)
+        enquiry = get_object_or_404(models.offer_from_api, agreement_title_id=agreement_title_id)
         enquiry.status = 'Approved'
         enquiry.save()
         messages.success(request, 'Status changed to Approved.')
 
-
     return render(request, 'service/customer_view_approved_request_invoice.html', {'enquiry': enquiry})
+
 
 
 @api_view(['GET'])
@@ -549,11 +549,35 @@ def customer_view_approved_request_invoice_view(request):
     if response.status_code == 200:
         # Parse the JSON response
         offers_data = response.json()
+
+        # Save data into the model
+        for offer in offers_data:
+            # Check if the record already exists based on agreement_title_id
+            obj, created = models.offer_from_api.objects.get_or_create(
+                agreement_title_id=offer.get('agreement_title_id'),
+                defaults={
+                    'agreement_title': offer.get('agreement_title'),
+                    'project_information': offer.get('project_information'),
+                    'employee_name': offer.get('employee_name'),
+                    'provider_name': offer.get('provider_name'),
+                    'contactperson': offer.get('contactperson'),
+                    'externalperson': offer.get('externalperson'),
+                    'rate': offer.get('rate'),
+                    'dateuntil': offer.get('dateuntil'),
+                    'notes': offer.get('notes'),
+                    'document': offer.get('document'),
+                    'status': offer.get('status'),
+                    'v': offer.get('__v'),
+                }
+            )
+            # Access obj and created here
+            print(obj)
+            print(created)
     else:
         # Handle the error, for example, display an error message
         offers_data = []
 
-    return render(request,'service/customer_view_approved_request_invoice.html',{'offers':offers_data})
+    return render(request, 'service/customer_view_approved_request_invoice.html', {'offers': offers_data})
 
 
 
