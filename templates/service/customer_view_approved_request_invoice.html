@@ -82,7 +82,7 @@
                     if (response.ok) {
                         // Change status in the current row from "Available" to "Accepted"
                         const currentRow = form.closest('tr');
-                        const statusCell = currentRow.querySelector('td:nth-child(7)'); // Assuming the status is in the seventh column
+                        const statusCell = currentRow.querySelector('td:nth-child(8)'); // Assuming the status is in the seventh column
                         statusCell.textContent = 'Accepted';
                     }
                 })
