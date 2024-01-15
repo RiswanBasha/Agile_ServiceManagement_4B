@@ -555,27 +555,22 @@ def customer_view_approved_request_invoice_view(request):
         # Save data into the model
         for offer in offers_data:
             dateuntil = parse_datetime(offer['dateuntil'])
-            # Check if the record already exists based on agreement_title_id
-            obj, created = models.offer_from_api.objects.get_or_create(
+            # Create and save the model instance
+            offer_instance = models.offer_from_api.objects.create(
                 agreement_title_id=offer.get('agreement_title_id'),
-                defaults={
-                    'agreement_title': offer.get('agreement_title'),
-                    'project_information': offer.get('project_information'),
-                    'employee_name': offer.get('employee_name'),
-                    'provider_name': offer.get('provider_name'),
-                    'contactperson': offer.get('contactperson'),
-                    'externalperson': offer.get('externalperson'),
-                    'rate': offer.get('rate'),
-                    'dateuntil': dateuntil, 
-                    'notes': offer.get('notes'),
-                    'document': offer.get('document'),
-                    'status': offer.get('status'),
-                    'v': offer.get('__v'),
-                }
+                agreement_title=offer.get('agreement_title'),
+                project_information=offer.get('project_information'),
+                employee_name=offer.get('employee_name'),
+                provider_name=offer.get('provider_name'),
+                contactperson=offer.get('contactperson'),
+                externalperson=offer.get('externalperson'),
+                rate=offer.get('rate'),
+                dateuntil=dateuntil, 
+                notes=offer.get('notes'),
+                document=offer.get('document'),
+                status=offer.get('status'),
+                v=offer.get('__v'),
             )
-            # Access obj and created here
-            print(obj)
-            print(created)
     else:
         # Handle the error, for example, display an error message
         offers_data = []
