@@ -13,33 +13,33 @@
                         <table id="requests-offers-table">
                             <thead>
                                 <tr>
-                                    <th>Agreement Name</th>
-                                    <th>Employee Name</th>
-                                    <th>Provider Name</th>
-                                    <th>Contact Person</th>
-                                    <th>External Person</th>
+                                    <th>Agreement Title</th>
+                                    <th>Project Information</th>
+                                    <th>Status</th>
                                     <th>Budget</th>
+                                    <th>Offer</th>
+                                    <th>Accept</th>
+                                    <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for m in offers %}
+                                {% for enq in enquiries %}
                                     <tr>
-                                        <td> {{m.agreement_title}}</td>
-                                        <td>{{m.employee_name}}</td>
-                                        <td>{{m.provider_name}}</td>
-                                        <td>{{m.contactperson}}</td>
-                                        <td>{{m.externalperson}}</td>
-                                        <td>{{m.rate}}</td>
+                                        <td>{{ enq.agreement_title }}</td>
+                                        <td>{{ enq.project_information }}</td>
+                                        <td>{{ enq.status }}</td>
+                                        <td>{{ enq.cost }}</td>
+                                        <td>{{ enq.offer }}</td>
                                         <!-- Accept button with form -->
                                         <td>
-                                            <form class="accept-form" data-id="{{ m.id }}" method="post" action="{% url 'customer-view-approved-offers' m.id %}">
+                                            <form class="accept-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-view-approved-offers' enq.id %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="accept-btn" style="color:green; text-decoration:none;font-size:25px;" onclick="return confirm('Are you sure you want to accept this offer?');">&#10003;</button>
                                             </form>
                                         </td>
                                         <!-- Delete button -->
                                         <td>
-                                            <form class="delete-form" data-id="{{ m.id }}" method="post" action="{% url 'customer-delete-request' m.id %}">
+                                            <form class="delete-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-delete-request' enq.id %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="delete-btn" style="color:blue; text-decoration:none;font-size:25px;" onclick="return confirm('Are you sure you want to delete this?');">&#10008;</button>
                                             </form>
