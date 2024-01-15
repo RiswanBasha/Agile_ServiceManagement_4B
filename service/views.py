@@ -482,7 +482,6 @@ def customer_delete_request_view(request,pk):
 
 
 @login_required(login_url='customerlogin')
-@user_passes_test(is_customer)
 def customer_view_approved_offers(request, pk):
     api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
     response = requests.get(api_url)
