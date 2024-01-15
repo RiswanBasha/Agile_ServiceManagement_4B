@@ -23,7 +23,8 @@
                   <th>Contact Person</th>
                   <th>External Person</th>
                   <th>Budget</th>
-                  <th>Delete</th>
+                  <!-- <th>Update</th>
+                  <th>Delete</th> -->
                 </tr>
 							</thead>
 							<tbody>
@@ -36,8 +37,8 @@
                   <td>{{m.contact_person}}</td>
                   <td>{{m.external_person}}</td>
                   <td>{{m.rate}}</td>
-
-                  <td><a style="color:blue; text-decoration:none;font-size:25px;"href="{% url 'delete-offer' m.id  %}">&#10008;</a></td>
+                  <!-- <td><a  style="color:red; text-decoration:none;font-size:25px;" href="{% url 'update-offer' m.id  %}">&#9998;</a></td>
+                  <td><a style="color:blue; text-decoration:none;font-size:25px;"href="{% url 'delete-offer' m.id  %}">&#10008;</a></td> -->
                 </tr>
                 {% endfor %}
 
