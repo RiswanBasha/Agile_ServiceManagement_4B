@@ -41,7 +41,7 @@ class offer_from_api(models.Model):
     contactperson = models.CharField(max_length=255)
     externalperson = models.CharField(max_length=255)
     rate = models.DecimalField(max_digits=10, decimal_places=2)
-    dateuntil = models.DateTimeField()
+    dateuntil = models.DateTimeField(null=True, blank=True)
     notes = models.TextField()
     document = models.TextField()
     status = models.CharField(max_length=255)
