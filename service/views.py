@@ -694,7 +694,7 @@ def get_specific_request(request, request_id):
         else:
             # Here, generate the specific URL for this enquiry
             specific_url = f"/enquiries/{request_id}/"  # Replace this with your actual URL structure
-            return render(request, 'service/specific_enquiry.html', {'enquiry': enquiry_data, 'specific_url': specific_url, 'customer': customer})
+            return render(request, 'service/specific_enquiry.html', {'enquiry': enquiry_data, 'specific_url': specific_url})
     except models.Customer.DoesNotExist:
         return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
     except models.Request.DoesNotExist:
