@@ -26,12 +26,12 @@
                             <tbody>
                                 {% for enq in offers_data %}
                                     <tr>
-                                        <td> {{m.agreement_title}}</td>
-                                        <td>{{m.employee_name}}</td>
-                                        <td>{{m.provider_name}}</td>
-                                        <td>{{m.contactperson}}</td>
-                                        <td>{{m.externalperson}}</td>
-                                        <td>{{m.rate}}</td>
+                                        <td> {{enq.agreement_title}}</td>
+                                        <td>{{enq.employee_name}}</td>
+                                        <td>{{enq.provider_name}}</td>
+                                        <td>{{enq.contactperson}}</td>
+                                        <td>{{enq.externalperson}}</td>
+                                        <td>{{enq.rate}}</td>
                                         <!-- Accept button with form -->
                                         <td>
                                             <form class="accept-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-view-approved-offers' enq.id %}">
