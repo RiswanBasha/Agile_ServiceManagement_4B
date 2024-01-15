@@ -486,14 +486,17 @@ def customer_delete_request_view(request,pk):
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_offers(request, pk):
-    if request.method == 'POST':
-        enquiry=models.Request.objects.get(id=pk)
-        enquiry.status = 'Approved'
-        enquiry.save()
-        messages.success(request, 'Status changed to Approved.')
+    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
+    response = requests.get(api_url)
 
+    if response.status_code == 200:
+        # Parse the JSON response
+        offers_data = response.json()
+    else:
+        # Handle the error, for example, display an error message
+        offers_data = []
 
-    return render(request, 'service/customer_view_approved_request_invoice.html', {'enquiry': enquiry})
+    return render(request, 'service/customer_view_approved_request_invoice.html', {'offers': offers_data})
 
 
 @api_view(['GET'])
