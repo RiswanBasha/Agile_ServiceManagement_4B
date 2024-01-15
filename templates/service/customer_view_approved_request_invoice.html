@@ -13,11 +13,12 @@
                         <table id="requests-offers-table">
                             <thead>
                                 <tr>
-                                    <th>Agreement Title</th>
-                                    <th>Project Information</th>
-                                    <th>Status</th>
+                                    <th>Agreement Name</th>
+                                    <th>Employee Name</th>
+                                    <th>Provider Name</th>
+                                    <th>Contact Person</th>
+                                    <th>External Person</th>
                                     <th>Budget</th>
-                                    <th>Offer</th>
                                     <th>Accept</th>
                                     <th>Delete</th>
                                 </tr>
@@ -25,11 +26,12 @@
                             <tbody>
                                 {% for enq in offers_data %}
                                     <tr>
-                                        <td>{{ enq.agreement_title }}</td>
-                                        <td>{{ enq.project_information }}</td>
-                                        <td>{{ enq.status }}</td>
-                                        <td>{{ enq.cost }}</td>
-                                        <td>{{ enq.offer }}</td>
+                                        <td> {{m.agreement_title}}</td>
+                                        <td>{{m.employee_name}}</td>
+                                        <td>{{m.provider_name}}</td>
+                                        <td>{{m.contactperson}}</td>
+                                        <td>{{m.externalperson}}</td>
+                                        <td>{{m.rate}}</td>
                                         <!-- Accept button with form -->
                                         <td>
                                             <form class="accept-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-view-approved-offers' enq.id %}">
