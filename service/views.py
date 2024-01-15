@@ -557,20 +557,22 @@ def customer_view_approved_request_invoice_view(request):
     # Save data into the model
         for offer in offers_data:
             try:
-                # Try to create the model instance
-                models.offer_from_api.objects.create(
+                # Try to update existing record or create a new one
+                offer_instance, created = models.offer_from_api.objects.update_or_create(
                     agreement_title_id=offer.get('agreement_title_id'),
-                    agreement_title=offer.get('agreement_title'),
-                    project_information=offer.get('project_information'),
-                    employee_name=offer.get('employee_name'),
-                    provider_name=offer.get('provider_name'),
-                    contactperson=offer.get('contactperson'),
-                    externalperson=offer.get('externalperson'),
-                    rate=offer.get('rate'),
-                    notes=offer.get('notes'),
-                    document=offer.get('document'),
-                    status=offer.get('status'),
-                    v=offer.get('__v'),
+                    defaults={
+                        'agreement_title': offer.get('agreement_title'),
+                        'project_information': offer.get('project_information'),
+                        'employee_name': offer.get('employee_name'),
+                        'provider_name': offer.get('provider_name'),
+                        'contactperson': offer.get('contactperson'),
+                        'externalperson': offer.get('externalperson'),
+                        'rate': offer.get('rate'),
+                        'notes': offer.get('notes'),
+                        'document': offer.get('document'),
+                        'status': offer.get('status'),
+                        'v': offer.get('__v'),
+                    }
                 )
             except IntegrityError:
                 # Handle the case where the record already exists
