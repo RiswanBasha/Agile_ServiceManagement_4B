@@ -282,12 +282,14 @@ def admin_add_offer_view(request):
 def admin_view_offer_view(request):
     api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
     response = requests.get(api_url)
+
     if response.status_code == 200:
         # Parse the JSON response
         offers_data = response.json()
     else:
         # Handle the error, for example, display an error message
         offers_data = []
+
     return render(request, 'service/admin_view_offer.html', {'offers': offers_data})
 
 
@@ -484,15 +486,14 @@ def customer_delete_request_view(request,pk):
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_offers(request, pk):
-    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        # Parse the JSON response
-        offers_data = response.json()
-    else:
-        # Handle the error, for example, display an error message
-        offers_data = []
-    return render(request, 'service/admin_view_offer.html', {'offers': offers_data})
+    if request.method == 'POST':
+        enquiry=models.Request.objects.get(id=pk)
+        enquiry.status = 'Approved'
+        enquiry.save()
+        messages.success(request, 'Status changed to Approved.')
+
+
+    return render(request, 'service/customer_view_approved_request_invoice.html', {'enquiry': enquiry})
 
 
 @api_view(['GET'])
@@ -542,14 +543,17 @@ def customer_view_approved_request_view(request):
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_request_invoice_view(request):
-    customer=models.Customer.objects.get(user_id=request.user.id)
-    enquiries=models.Request.objects.all().filter(customer_id=customer.id).exclude(status='Pending')
-    offer_names = []
-    for enquiry in enquiries:
-            if enquiry.offer:
-                offer_name = enquiry.offer.employee_name  # Accessing the get_name property from offer model
-                offer_names.append(offer_name)
-    return render(request,'service/customer_view_approved_request_invoice.html',{'customer':customer,'enquiries':enquiries,'offer_names': offer_names,})
+    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
+        # Parse the JSON response
+        offers_data = response.json()
+    else:
+        # Handle the error, for example, display an error message
+        offers_data = []
+
+    return render(request,'service/customer_view_approved_request_invoice.html',{'offers':offers_data})
 
 
 
