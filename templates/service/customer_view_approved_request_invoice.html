@@ -16,18 +16,20 @@
                                     <th>Agreement Title</th>
                                     <th>Project Information</th>
                                     <th>Status</th>
+                                    <th>Budget</th>
                                     <th>Offer</th>
                                     <th>Accept</th>
                                     <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for offer in offers_data %}
+                                {% for enq in enquiries %}
                                     <tr>
-                                        <td>{{ offer.agreement_title }}</td>
-                                        <td>{{ offer.project_information }}</td>
-                                        <td>{{ offer.status }}</td>
-                                        <td>{{ offer.rate}}</td>
+                                        <td>{{ enq.agreement_title }}</td>
+                                        <td>{{ enq.project_information }}</td>
+                                        <td>{{ enq.status }}</td>
+                                        <td>{{ enq.cost }}</td>
+                                        <td>{{ enq.offer }}</td>
                                         <!-- Accept button with form -->
                                         <td>
                                             <form class="accept-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-view-approved-offers' enq.id %}">

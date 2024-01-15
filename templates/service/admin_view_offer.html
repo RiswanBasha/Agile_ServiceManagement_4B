@@ -1,55 +1,86 @@
 {% extends 'service/adminbase.html' %}
 {% block content %}
 {% load static %}
-	<!-- main content -->
-	<div class="wrapper">
+    <!-- main content -->
+    <div class="wrapper">
 
-<!-- ****** table  start ********** -->
-		<div class="row">
-			<div class="col-12 col-m-12 col-sm-12">
-				<div class="card">
-					<div class="card-header">
-						<h3 style="color:red; text-align:center" >Offers
-						</h3>
+        <!-- ****** table start ********** -->
+        <div class="row">
+            <div class="col-12 col-m-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color:red; text-align:center">Offers</h3>
+                    </div>
+                    <div class="card-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Agreement Name</th>
+                                    <th>Employee Name</th>
+                                    <th>Provider Name</th>
+                                    <th>Contact Person</th>
+                                    <th>External Person</th>
+                                    <th>Budget</th>
+                                    <th>Update</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in offers %}
+                                    <tr>
+                                        <td>{{ m.agreement_name }}</td>
+                                        <td>{{ m.employee_name }}</td>
+                                        <td>{{ m.provider_name }}</td>
+                                        <td>{{ m.contact_person }}</td>
+                                        <td>{{ m.external_person }}</td>
+                                        <td>{{ m.rate }}</td>
+                                        <td><a style="color:red; text-decoration:none;font-size:25px;" href="{% url 'update-offer' m.id  %}">&#9998;</a></td>
+                                        <td><a style="color:blue; text-decoration:none;font-size:25px;" href="{% url 'delete-offer' m.id  %}">&#10008;</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ****** table start ********** -->
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-					</div>
-					<div class="card-content">
-						<table>
-							<thead>
-                <tr>
-                  <th>Agreement Name</th>
-                  <th>Employee Name</th>
-                  <th>Provider Name</th>
-                  <th>Contact Person</th>
-                  <th>External Person</th>
-                  <th>Budget</th>
-                  <th>Update</th>
-                  <th>Delete</th>
-                </tr>
-							</thead>
-							<tbody>
-              {% for m in offers %}
-                <tr>
-                  <td> {{m.agreement_name}}</td>
-                  <!-- <td> <img src="{% static m.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td> -->
-                  <td>{{m.employee_name}}</td>
-                  <td>{{m.provider_name}}</td>
-                  <td>{{m.contact_person}}</td>
-                  <td>{{m.external_person}}</td>
-                  <td>{{m.rate}}</td>
-                  <td><a  style="color:red; text-decoration:none;font-size:25px;" href="{% url 'update-offer' m.id  %}">&#9998;</a></td>
-                  <td><a style="color:blue; text-decoration:none;font-size:25px;"href="{% url 'delete-offer' m.id  %}">&#10008;</a></td>
-                </tr>
-                {% endfor %}
+        <!-- Add this script for fetching data from the API -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Fetch data from the API
+                $.ajax({
+                    url: 'http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Assuming the API returns an array of offers
+                        if (data.length > 0) {
+                            // Take the first offer and pre-fill the form (you can adjust this logic based on your requirements)
+                            var offer = data[0];
 
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-<!-- ****** table start ********** -->
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-	</div>
-	<!-- end main content -->
+                            // Set the form values
+                            $('#id_agreement_name').val(offer.agreement_name);
+                            $('#id_employee_name').val(offer.employee_name);
+                            $('#id_provider_name').val(offer.provider_name);
+                            $('#id_contact_person').val(offer.contact_person);
+                            $('#id_external_person').val(offer.external_person);
+                            $('#id_rate').val(offer.rate);
+                            // ... (set other fields accordingly)
+
+                            // You can also disable certain fields if needed
+                            // $('#id_some_field').prop('disabled', true);
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching data from the API:', error);
+                    }
+                });
+            });
+        </script>
+    </div>
+    <!-- end main content -->
 {% endblock content %}
