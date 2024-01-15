@@ -19,6 +19,7 @@
                                     <th>Contact Person</th>
                                     <th>External Person</th>
                                     <th>Budget</th>
+                                    <th>Status</th>
                                     <th>Accept</th>
                                     <th>Delete</th>
                                 </tr>
@@ -32,6 +33,7 @@
                                         <td>{{enq.contactperson}}</td>
                                         <td>{{enq.externalperson}}</td>
                                         <td>{{enq.rate}}</td>
+                                        <td>{{enq.status}}</td>
                                         <!-- Accept button with form -->
                                         <td>
                                             <form class="accept-form" data-id="{{ enq.id }}" method="post" action="{% url 'customer-view-approved-offers' enq.agreement_title_id %}">
