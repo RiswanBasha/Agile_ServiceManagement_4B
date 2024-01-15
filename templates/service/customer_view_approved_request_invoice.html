@@ -14,6 +14,7 @@
                             <thead>
                                 <tr>
                                     <th>Agreement Name</th>
+                                    <th>Project Information</th>
                                     <th>Employee Name</th>
                                     <th>Provider Name</th>
                                     <th>Contact Person</th>
@@ -27,6 +28,7 @@
                                 {% for enq in offers %}
                                     <tr>
                                         <td>{{enq.agreement_title}}</td>
+                                        <td>{{enq.project_information}}</td>
                                         <td>{{enq.employee_name}}</td>
                                         <td>{{enq.provider_name}}</td>
                                         <td>{{enq.contactperson}}</td>
@@ -35,8 +37,9 @@
                                         <td>{{enq.status}}</td>
                                         <!-- Accept button with form -->
                                         <td>
-                                            <form class="accept-form" method="post" action="{% url 'customer-view-approved-offers' %}">
+                                            <form class="accept-form" method="post" action="">
                                                 {% csrf_token %}
+                                                <input type="hidden" name="pk" value="{{ enq.agreement_title_id }}">
                                                 <button type="submit" class="accept-btn" style="color:green; text-decoration:none; font-size:25px;" onclick="return confirm('Are you sure you want to accept this offer?');">&#10003;</button>
                                             </form>
                                             
