@@ -474,17 +474,27 @@ def customer_delete_request_view(request,pk):
     return redirect('customer-view-request')
 
 
+from django.shortcuts import render
+import requests
+
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_offers(request, pk):
-    if request.method == 'POST':
-        enquiry=models.Request.objects.get(id=pk)
-        enquiry.status = 'Approved'
-        enquiry.save()
-        messages.success(request, 'Status changed to Approved.')
+    # Assuming the API endpoint provides the offers data
+    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=A"
 
+    # Make a request to the API
+    response = requests.get(api_url)
 
-    return render(request, 'service/customer_view_approved_request_invoice.html', {'enquiry': enquiry})
+    if response.status_code == 200:
+        # Parse the JSON response
+        offers_data = response.json()
+    else:
+        # Handle the error, for example, display an error message
+        offers_data = []
+
+    return render(request, 'service/customer_view_approved_request_invoice.html', {'offers_data': offers_data})
+
 
 
 @api_view(['GET'])
@@ -630,7 +640,7 @@ def get_specific_request(request, request_id):
             'id': enquiry.id,
             'agreement_title': enquiry.agreement_title,
             'agreement_title_id':enquiry.agreement_title_id,
-            'project_information': enquiry.project_information,
+            'project_information': enquiry.project_information,         
             'start_date': enquiry.start_date,
             'end_date': enquiry.end_date,
             'work_location': enquiry.work_location,
