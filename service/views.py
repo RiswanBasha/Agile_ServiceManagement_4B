@@ -566,7 +566,7 @@ def customer_view_approved_request_invoice_view(request):
                     'contactperson': offer.get('contactperson'),
                     'externalperson': offer.get('externalperson'),
                     'rate': offer.get('rate'),
-                    'dateuntil': offer.get('dateuntil'),
+                    'dateuntil': dateuntil, 
                     'notes': offer.get('notes'),
                     'document': offer.get('document'),
                     'status': offer.get('status'),
