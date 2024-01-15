@@ -481,7 +481,7 @@ import requests
 @user_passes_test(is_customer)
 def customer_view_approved_offers(request, pk):
     # Assuming the API endpoint provides the offers data
-    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=A"
+    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
 
     # Make a request to the API
     response = requests.get(api_url)
