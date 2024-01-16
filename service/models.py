@@ -33,14 +33,14 @@ class offer(models.Model):
         return self.employee_name
 
 class offer_from_api(models.Model):
-    agreement_title_id = models.CharField(max_length=255, unique=True)
+    agreement_title_id = models.CharField(max_length=255)
     agreement_title = models.CharField(max_length=255)
     project_information = models.TextField()
     employee_name = models.CharField(max_length=255)
     provider_name = models.CharField(max_length=255)
     contactperson = models.CharField(max_length=255)
     externalperson = models.CharField(max_length=255)
-    rate = models.DecimalField(max_digits=10, decimal_places=2)
+    rate = models.DecimalField(max_digits=10, decimal_places=2, unique=True)
     notes = models.TextField()
     document = models.TextField()
     status = models.CharField(max_length=255)

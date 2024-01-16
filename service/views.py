@@ -487,45 +487,37 @@ def customer_delete_request_view(request,pk):
 
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
-def customer_view_approved_offers(request, agreement_title_id):
+def customer_view_approved_offers(request, rate):
     if request.method == 'POST':
-        enquiry = get_object_or_404(models.offer_from_api, agreement_title_id=agreement_title_id)
-        enquiry.status = 'Approved'
-        enquiry.save()
-        messages.success(request, 'Status changed to Approved.')
-
-    return render(request, 'service/customer_view_approved_request_invoice.html', {'enquiry': enquiry})
-
-
+        try:
+            enquiry = models.offer_from_api.objects.get(rate=rate)
+            enquiry.status = 'Approved'
+            enquiry.save()  
+            messages.success(request, 'Status changed to Approved.')
+            return JsonResponse({'success': True})
+        except models.offer_from_api.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Offer not found with the given rate'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
+    
+    
 
 @api_view(['GET'])
 def get_approved_offers_api(request):
     if request.method == 'GET':
-        approved_offers = models.Request.objects.filter(status='Approved')  # Fetch all approved offers
+        approved_offers = models.offer_from_api.objects.filter(status='Approved')  # Fetch all approved offers
 
         # Manually construct JSON data from the queryset
         all_offer_data = []
         for offer in approved_offers:
             offer_data = {
-                    'id': offer.id,
-                    'project_information': offer.project_information,
-                    'start_date': offer.start_date,
-                    'end_date': offer.end_date,
+                    'agreement_title_id': offer.agreement_title_id,
                     'agreement_title':offer.agreement_title,
-                    'budget':offer.cost,
+                    'project_information': offer.project_information,
+                    'budget':offer.rate,
                     'status':offer.status,
-                    'customer': {
-                        'id': offer.customer.id,
-                        'user': offer.customer.get_name
-                        # Include other relevant fields from User model
-                    },
-                    'offer': {
-                        'id': offer.offer.id,
-                        'provider_name': offer.offer.provider_name,  # Include relevant fields from Offer model
-                        # Add other fields from Offer model if needed
-                        'employee_name':offer.offer.employee_name
-                    }
-                # Add
+                    'employee_name':offer.employee_name,
+                    'provider_name':offer.provider_name
                     # Add other fields here as needed
                 }
             all_offer_data.append(offer_data)
@@ -556,23 +548,21 @@ def customer_view_approved_request_invoice_view(request):
 
     # Save data into the model
         for offer in offers_data:
+            print("Processing offer:", offer)
             try:
-                # Try to update existing record or create a new one
-                offer_instance, created = models.offer_from_api.objects.update_or_create(
+                offer_instance = models.offer_from_api.objects.create(
                     agreement_title_id=offer.get('agreement_title_id'),
-                    defaults={
-                        'agreement_title': offer.get('agreement_title'),
-                        'project_information': offer.get('project_information'),
-                        'employee_name': offer.get('employee_name'),
-                        'provider_name': offer.get('provider_name'),
-                        'contactperson': offer.get('contactperson'),
-                        'externalperson': offer.get('externalperson'),
-                        'rate': offer.get('rate'),
-                        'notes': offer.get('notes'),
-                        'document': offer.get('document'),
-                        'status': offer.get('status'),
-                        'v': offer.get('__v'),
-                    }
+                    agreement_title=offer.get('agreement_title'),
+                    project_information=offer.get('project_information'),
+                    employee_name=offer.get('employee_name'),
+                    provider_name=offer.get('provider_name'),
+                    contactperson=offer.get('contactperson'),
+                    externalperson=offer.get('externalperson'),
+                    rate=offer.get('rate'),
+                    notes=offer.get('notes'),
+                    document=offer.get('document'),
+                    status=offer.get('status'),
+                    v=offer.get('__v'),
                 )
             except IntegrityError:
                 # Handle the case where the record already exists

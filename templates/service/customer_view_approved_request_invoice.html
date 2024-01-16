@@ -1,4 +1,5 @@
 {% extends 'service/customerbase.html' %}
+{% load static %}
 {% block content %}
     <!-- main content -->
     <div class="wrapper">
@@ -34,15 +35,14 @@
                                         <td>{{enq.contactperson}}</td>
                                         <td>{{enq.externalperson}}</td>
                                         <td>{{enq.rate}}</td>
-                                        <td>{{enq.status}}</td>
+                                        <td class="status-cell">{{enq.status}}</td> <!-- Add a class to the status cell -->
                                         <!-- Accept button with form -->
                                         <td>
-                                            <form class="accept-form" method="post" action="">
+                                            <form class="accept-form" method="post" action="/customer-view-approved-offers/{{ enq.rate }}/">
                                                 {% csrf_token %}
-                                                <input type="hidden" name="pk" value="{{ enq.agreement_title_id }}">
-                                                <button type="submit" class="accept-btn" style="color:green; text-decoration:none; font-size:25px;" onclick="return confirm('Are you sure you want to accept this offer?');">&#10003;</button>
+                                                <input type="hidden" name="rate" value="{{ enq.rate }}">
+                                                <button type="submit" class="accept-btn" style="color:green; text-decoration:none; font-size:25px;" onclick="return approveOffer(this);">&#10003;</button>
                                             </form>
-                                            
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -63,53 +63,46 @@
 
 <!-- JavaScript to handle changing status -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const acceptButtons = document.querySelectorAll('.accept-btn');
-    
-        acceptButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                const agreementTitleId = this.dataset.agreementTitleId;  // assuming each button has this data attribute
-    
-                fetch(`/customer-view-approved-offers/${agreementTitleId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')  // Function to get CSRF token from cookies
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Update the status in the current row to "Approved"
-                        const currentRow = this.closest('tr');
-                        const statusCell = currentRow.querySelector('td:nth-child(8)');  // Adjust column index as needed
-                        statusCell.textContent = 'Approved';
-                    } else {
-                        alert(data.message);  // Display error message
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            });
+    function approveOffer(button) {
+        const form = button.closest('form');
+        const formData = new FormData(form);
+        const rate = formData.get('rate');
+        const statusCell = button.closest('tr').querySelector('.status-cell');
+
+        fetch(`/customer-view-approved-offers/${rate}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Update the status in the current row from "Available" to "Approved"
+                statusCell.textContent = 'Approved';
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
         });
-    
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
+
+        return false; // Prevent the form from submitting
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + '=') {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
             }
-            return cookieValue;
         }
-    });
-    </script>
-    
+        return cookieValue;
+    }
+</script>
 
 {% endblock content %}
