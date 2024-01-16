@@ -501,7 +501,6 @@ def customer_view_approved_offers(request, rate):
         return JsonResponse({'success': False, 'message': 'Invalid request method'})
     
     
-
 @api_view(['GET'])
 def get_approved_offers_api(request):
     if request.method == 'GET':
@@ -511,20 +510,20 @@ def get_approved_offers_api(request):
         all_offer_data = []
         for offer in approved_offers:
             offer_data = {
-                    'agreement_title_id': offer.agreement_title_id,
-                    'agreement_title':offer.agreement_title,
-                    'project_information': offer.project_information,
-                    'budget':offer.rate,
-                    'status':offer.status,
-                    'employee_name':offer.employee_name,
-                    'provider_name':offer.provider_name
-                    # Add other fields here as needed
-                }
+                'agreement_title_id': offer.agreement_title_id,
+                'agreement_title': offer.agreement_title,
+                'project_information': offer.project_information,
+                'budget': offer.rate,
+                'status': offer.status,
+                'employee_name': offer.employee_name,
+                'provider_name': offer.provider_name
+                # Add other fields here as needed
+            }
             all_offer_data.append(offer_data)
-            
 
-            return JsonResponse(all_offer_data, safe=False)
-        return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(all_offer_data, safe=False)
+    return JsonResponse({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 @login_required(login_url='customerlogin')
