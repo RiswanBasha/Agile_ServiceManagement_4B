@@ -447,7 +447,7 @@ def admin_feedback_view(request):
 def customer_dashboard_view(request):
     customer=models.Customer.objects.get(user_id=request.user.id)
     work_in_progress=models.Request.objects.all().filter(customer_id=customer.id,status='In-Progress').count()
-    work_completed=models.Request.objects.all().filter(customer_id=customer.id).filter(Q(status="Repairing Done") | Q(status="Approved")).count()
+    work_completed=models.offer_from_api.objects.all().filter(Q(status="Repairing Done") | Q(status="Approved")).count()
     new_request_made=models.Request.objects.all().filter(customer_id=customer.id).filter(Q(status="Pending")).count()
     #bill=models.Request.objects.all().filter(customer_id=customer.id).filter(Q(status="Repairing Done") | Q(status="Released")).aggregate(Sum('cost'))
     #print(bill)
