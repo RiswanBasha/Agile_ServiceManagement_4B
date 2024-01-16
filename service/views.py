@@ -547,7 +547,7 @@ from django.db import IntegrityError
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_request_invoice_view(request):
-    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
+    api_url = "http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=B"
     response = requests.get(api_url)
 
     if response.status_code == 200:
