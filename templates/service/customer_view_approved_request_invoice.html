@@ -62,55 +62,54 @@
 <!-- end main content -->
 
 <!-- JavaScript to handle changing status -->
-<!-- JavaScript to handle changing status -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const acceptButtons = document.querySelectorAll('.accept-btn');
-
-    acceptButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            const agreementTitleId = this.dataset.agreementTitleId;  // assuming each button has this data attribute
-
-            fetch(`customer-view-approved-offers/${agreementTitleId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')  // Function to get CSRF token from cookies
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the status in the current row to "Approved"
-                    const currentRow = this.closest('tr');
-                    const statusCell = currentRow.querySelector('td:nth-child(8)');  // Adjust column index as needed
-                    statusCell.textContent = 'Approved';
-                } else {
-                    alert(data.message);  // Display error message
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+    document.addEventListener('DOMContentLoaded', function() {
+        const acceptButtons = document.querySelectorAll('.accept-btn');
+    
+        acceptButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const agreementTitleId = this.dataset.agreementTitleId;  // assuming each button has this data attribute
+    
+                fetch(`/customer-view-approved-offers/${agreementTitleId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')  // Function to get CSRF token from cookies
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the status in the current row to "Approved"
+                        const currentRow = this.closest('tr');
+                        const statusCell = currentRow.querySelector('td:nth-child(8)');  // Adjust column index as needed
+                        statusCell.textContent = 'Approved';
+                    } else {
+                        alert(data.message);  // Display error message
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             });
         });
-    });
-});
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
             }
+            return cookieValue;
         }
-    }
-    return cookieValue;
-}
-
-</script>
+    });
+    </script>
+    
 
 {% endblock content %}
