@@ -64,34 +64,53 @@
 <!-- JavaScript to handle changing status -->
 <!-- JavaScript to handle changing status -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const acceptForms = document.querySelectorAll('.accept-form');
-        acceptForms.forEach(form => {
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const formData = new FormData(form);
+document.addEventListener('DOMContentLoaded', function() {
+    const acceptButtons = document.querySelectorAll('.accept-btn');
 
-                fetch(form.action, {
-                    method: form.method,
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Change status in the current row from "Available" to "Accepted"
-                        const currentRow = form.closest('tr');
-                        const statusCell = currentRow.querySelector('td:nth-child(8)'); // Assuming the status is in the seventh column
-                        statusCell.textContent = 'Accepted';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+    acceptButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const agreementTitleId = this.dataset.agreementTitleId;  // assuming each button has this data attribute
+
+            fetch(`customer-view-approved-offers/${agreementTitleId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')  // Function to get CSRF token from cookies
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the status in the current row to "Approved"
+                    const currentRow = this.closest('tr');
+                    const statusCell = currentRow.querySelector('td:nth-child(8)');  // Adjust column index as needed
+                    statusCell.textContent = 'Approved';
+                } else {
+                    alert(data.message);  // Display error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
         });
     });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 </script>
 
 {% endblock content %}
