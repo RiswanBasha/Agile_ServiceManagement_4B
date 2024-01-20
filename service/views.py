@@ -282,16 +282,38 @@ def admin_add_offer_view(request):
 
 @login_required(login_url='adminlogin')
 def admin_view_offer_view(request):
-    api_url = "http://ec2-54-147-16-17.compute-1.amazonaws.com:4000/users/offers?provider=B"
+    api_url = "http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=B"
     response = requests.get(api_url)
 
     if response.status_code == 200:
         # Parse the JSON response
         offers_data = response.json()
+
+    # Save data into the model
+        for offer in offers_data:
+            print("Processing offer:", offer)
+            try:
+                offer_instance = models.offer_from_api.objects.create(
+                    agreement_title_id=offer.get('agreement_title_id'),
+                    agreement_title=offer.get('agreement_title'),
+                    servicerequest_id=offer.get('servicerequest_id'),
+                    project_information=offer.get('project_information'),
+                    employee_name=offer.get('employee_name'),
+                    provider_name=offer.get('provider_name'),
+                    contactperson=offer.get('contactperson'),
+                    externalperson=offer.get('externalperson'),
+                    rate=offer.get('rate'),
+                    notes=offer.get('notes'),
+                    document=offer.get('document'),
+                    status=offer.get('status'),
+                    v=offer.get('__v'),
+                )
+            except IntegrityError:
+                # Handle the case where the record already exists
+                pass
     else:
         # Handle the error, for example, display an error message
         offers_data = []
-
     return render(request, 'service/admin_view_offer.html', {'offers': offers_data})
 
 
@@ -490,7 +512,7 @@ def customer_delete_request_view(request,pk):
 def customer_view_approved_offers(request, rate):
     if request.method == 'POST':
         try:
-            enquiry = models.offer_from_api.objects.get(rate=rate)
+            enquiry = get_object_or_404(models.offer_from_api, rate=rate)
             enquiry.status = 'Approved'
             enquiry.save()  
             messages.success(request, 'Status changed to Approved.')
@@ -512,6 +534,7 @@ def get_approved_offers_api(request):
             offer_data = {
                 'agreement_title_id': offer.agreement_title_id,
                 'agreement_title': offer.agreement_title,
+                'servicerequest_id': offer.servicerequest_id,
                 'project_information': offer.project_information,
                 'budget': offer.rate,
                 'status': offer.status,
@@ -552,6 +575,7 @@ def customer_view_approved_request_invoice_view(request):
                 offer_instance = models.offer_from_api.objects.create(
                     agreement_title_id=offer.get('agreement_title_id'),
                     agreement_title=offer.get('agreement_title'),
+                    servicerequest_id=offer.get('servicerequest_id'),
                     project_information=offer.get('project_information'),
                     employee_name=offer.get('employee_name'),
                     provider_name=offer.get('provider_name'),

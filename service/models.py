@@ -35,6 +35,7 @@ class offer(models.Model):
 class offer_from_api(models.Model):
     agreement_title_id = models.CharField(max_length=255)
     agreement_title = models.CharField(max_length=255)
+    servicerequest_id = models.CharField(max_length=255,null=True)
     project_information = models.TextField()
     employee_name = models.CharField(max_length=255)
     provider_name = models.CharField(max_length=255)
