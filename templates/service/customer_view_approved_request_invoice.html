@@ -1,6 +1,129 @@
 {% extends 'service/customerbase.html' %}
 {% load static %}
 {% block content %}
+
+<style>
+
+
+    #requests-offers-table th {
+        background-color: #f2f2f2;
+    }
+    /* Style for the Accept and Delete button containers */
+    .button-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    /* Textarea and Button Styling */
+    .reason-textarea {
+        flex-grow: 1;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px;
+        font-size: 14px;
+    }
+
+    .button {
+        padding: 8px 15px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Accept and Delete Button Styling */
+.accept-btn, .delete-btn {
+    border: none;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.accept-btn {
+    background-color: #4CAF50; /* Green background */
+}
+
+.accept-btn:hover {
+    background-color: #08f710; /* Darker green on hover */
+}
+.action-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .delete-btn {
+        background-color: #fc8077; /* Red background */
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px; /* Add some space between the button and the text area */
+    }
+
+
+
+/* Styling for disabled buttons to indicate they are inactive */
+.accept-btn[disabled], .delete-btn[disabled] {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.reason-textarea {
+        flex-grow: 1;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .delete-form {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+    }
+    
+    .delete-form .delete-btn {
+        background-color: #f98179; /* Red background */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 10px;
+        margin-right: 10px; /* Space between button and textarea */
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    .delete-form .reason-textarea {
+        flex-grow: 1;
+        padding: 8px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .delete-btn:hover {
+    background-color: #f2f2f2; /* Darker red on hover */
+}
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    .accept-btn, .delete-btn {
+        width: 100%; /* Full width on small screens */
+        margin-top: 10px; /* Add space above on small screens */
+    }
+}
+</style>
     <!-- main content -->
     <div class="wrapper">
         <!-- ****** table start ********** -->
@@ -15,6 +138,7 @@
                             <thead>
                                 <tr>
                                     <th>Agreement Name</th>
+                                    <th>Service Request ID</th>
                                     <th>Project Information</th>
                                     <th>Employee Name</th>
                                     <th>Provider Name</th>
@@ -22,28 +146,41 @@
                                     <th>External Person</th>
                                     <th>Budget</th>
                                     <th>Status</th>
-                                    <th>Accept</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for enq in offers %}
                                     <tr>
-                                        <td>{{enq.agreement_title}}</td>
-                                        <td>{{enq.project_information}}</td>
-                                        <td>{{enq.employee_name}}</td>
-                                        <td>{{enq.provider_name}}</td>
-                                        <td>{{enq.contactperson}}</td>
-                                        <td>{{enq.externalperson}}</td>
-                                        <td>{{enq.rate}}</td>
-                                        <td class="status-cell">{{enq.status}}</td> <!-- Add a class to the status cell -->
-                                        <!-- Accept button with form -->
-                                        <td>
-                                            <form class="accept-form" method="post" action="/customer-view-approved-offers/{{ enq.rate }}/">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="rate" value="{{ enq.rate }}">
-                                                <button type="submit" class="accept-btn" style="color:green; text-decoration:none; font-size:25px;" onclick="return approveOffer(this);">&#10003;</button>
-                                            </form>
-                                        </td>
+                                        <td>{{ enq.agreement_title }}</td>
+                                        <td>{{enq.servicerequest_id}}</td>
+                                        <td>{{ enq.project_information }}</td>
+                                        <td>{{ enq.employee_name }}</td>
+                                        <td>{{ enq.provider_name }}</td>
+                                        <td>{{ enq.contactperson }}</td>
+                                        <td>{{ enq.externalperson }}</td>
+                                        <td>{{ enq.rate }}</td>
+                                        <td class="status-cell">{{ enq.status }}</td>
+                                        <!-- Check if status is not 'Approved' before rendering Accept/Delete -->
+                                        {% if enq.status != 'Approved' %}
+                                            <td>
+                                                <form class="accept-form" method="post" action="/customer-view-approved-offers/{{ enq.rate }}/">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="rate" value="{{ enq.rate }}">
+                                                    <button type="submit" class="accept-btn">&#10003;</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form class="delete-form" method="post" action="/customer-delete-offers/{{ enq.rate }}/">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="rate" value="{{ enq.rate }}">
+                                                    <textarea name="delete_reason" required placeholder="Enter reason for decline"></textarea>
+                                                    <button type="submit" class="delete-btn">&#10060;</button>
+                                                </form>
+                                            </td>
+                                        {% else %}
+                                            <!-- If status is 'Approved', display nothing or a message -->
+                                            <td colspan="2"></td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -52,17 +189,16 @@
                 </div>
             </div>
         </div>
-        <!-- ****** table end ********** -->
-        <!-- end approved offers section -->
-
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     </div>
-    <!-- end main content -->
-</div>
 <!-- end main content -->
 
 <script>
     function approveOffer(button) {
+        // Confirmation prompt
+        if (!confirm("Are you sure you want to approve this offer?")) {
+            return false; // If user cancels, do not proceed
+        }
+
         const form = button.closest('form');
         const formData = new FormData(form);
         const rate = formData.get('rate');
@@ -79,13 +215,22 @@
             if (data.success) {
                 // Update the status in the current row from "Available" to "Approved"
                 statusCell.textContent = 'Approved';
+            } else {
+                alert("Failed to approve the offer.");
             }
         })
         .catch((error) => {
             console.error('Error:', error);
+            alert("An error occurred while approving the offer.");
         });
 
         return false; // Prevent the form from submitting
+    }
+    function confirmDelete(button) {
+    if (!confirm("Are you sure you want to delete this offer?")) {
+        return false; // If user cancels, prevent form submission
+    }
+    return true; // Proceed with form submission
     }
 
     function getCookie(name) {

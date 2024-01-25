@@ -6,7 +6,7 @@ import requests
 class CustomerUserForm(forms.ModelForm):
     class Meta:
         model=User
-        fields=['first_name','last_name','username','password']
+        fields=['first_name','last_name','username','email','password']
         widgets = {
         'password': forms.PasswordInput()
         }
@@ -14,7 +14,7 @@ class CustomerUserForm(forms.ModelForm):
 class CustomerForm(forms.ModelForm):
     class Meta:
         model=models.Customer
-        fields=['address','mobile','profile_pic']
+        fields=['email','mobile','profile_pic']
 
 
 class offerUserForm(forms.ModelForm):
@@ -60,7 +60,7 @@ class RequestForm(forms.ModelForm):
         super(RequestForm, self).__init__(*args, **kwargs)
 
         # Fetch agreement titles from the API and populate the dropdown
-        api_url = "http://35.174.107.106:3000/agreement/"  # URL without {id}
+        api_url = "https://dg4gi3uw0m2xs.cloudfront.net/agreement/"  # URL without {id}
         try:
             response = requests.get(api_url)
             if response.status_code == 200:

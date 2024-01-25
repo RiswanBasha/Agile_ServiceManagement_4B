@@ -20,6 +20,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate,login
 
 
 def home_view(request):
@@ -48,23 +50,102 @@ def adminclick_view(request):
     return HttpResponseRedirect('adminlogin')
 
 def customer_signup_view(request):
-    userForm=forms.CustomerUserForm()
-    customerForm=forms.CustomerForm()
-    mydict={'userForm':userForm,'customerForm':customerForm}
-    if request.method=='POST':
-        userForm=forms.CustomerUserForm(request.POST)
-        customerForm=forms.CustomerForm(request.POST,request.FILES)
+    userForm = forms.CustomerUserForm()
+    customerForm = forms.CustomerForm()
+    mydict = {'userForm': userForm, 'customerForm': customerForm, 'error_message': ''}
+
+    if request.method == 'POST':
+        userForm = forms.CustomerUserForm(request.POST)
+        customerForm = forms.CustomerForm(request.POST, request.FILES)
+
         if userForm.is_valid() and customerForm.is_valid():
-            user=userForm.save()
+            user = userForm.save(commit=False)
             user.set_password(user.password)
+            user.email = userForm.cleaned_data.get('email')  # Ensure email is set
             user.save()
-            customer=customerForm.save(commit=False)
-            customer.user=user
+
+            customer = customerForm.save(commit=False)
+            customer.user = user
             customer.save()
-            my_customer_group = Group.objects.get_or_create(name='CUSTOMER')
-            my_customer_group[0].user_set.add(user)
-        return HttpResponseRedirect('customerlogin')
-    return render(request,'service/customersignup.html',context=mydict)
+
+            my_customer_group, created = Group.objects.get_or_create(name='CUSTOMER')
+            my_customer_group.user_set.add(user)
+
+            # External API call
+            api_url = "http://codexauthv2.onrender.com/api/register/"
+            api_data = {
+                "username": user.username,
+                "email": user.email,
+                "password": request.POST.get('password'),
+                "role": "Base User",
+                "provider": "Team 4b"
+            }
+
+            response = requests.post(api_url, json=api_data)
+            print(response)
+
+            if response.status_code == 200 or 201:
+                response_data = response.json()
+                print(response_data)
+                token = response_data.get("token")
+                print(token)
+                request.session['api_token'] = token
+                # Save the token as needed
+            else:
+                if response.status_code == 500:
+                    print("Username already exists or invalid data sent.")  # Debugging line
+                    messages.error(request, 'Username already exists or invalid data sent.')
+                elif response.status_code == 400:
+                    messages.error(request, 'Server error occurred during registration')
+                else:
+                    messages.error(request, 'An unknown error occurred during registration.')
+
+                return render(request, 'service/customersignup.html', context=mydict)
+
+            return HttpResponseRedirect('customerlogin')
+
+    return render(request, 'service/customersignup.html', context=mydict)
+
+def customer_login_view(request):
+    # Initialize the form for a GET request
+    form = AuthenticationForm()
+
+    if request.method == 'POST':
+        print("Processing a POST request")  # Debugging print
+
+        # Process the form data for a POST request
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            print(f"Form is valid. Username: {username}, Password: {password}")  # Debugging print
+
+            # External API call
+            api_response = requests.post('http://codexauthv2.onrender.com/api/login/', data={'username': username, 'password': password})
+            print(f"API response status code: {api_response.status_code}")  # Debugging print
+
+            if api_response.status_code == 200:
+                # Authenticate the user on the Django side
+                user = authenticate(request, username=username, password=password)
+                print(f"User from authenticate: {user}")  # Debugging print
+
+                if user is not None:
+                    login(request, user)
+                    print("User authenticated and logged in, redirecting to dashboard")  # Debugging print
+                    return redirect('customer-dashboard')
+                else:
+                    print("User authentication failed")  # Debugging print
+                    messages.error(request, 'User does not exist in the local database')
+            else:
+                print("API login failed")  # Debugging print
+                messages.error(request, 'Login failed with the external API')
+        else:
+            print("Form is invalid")  # Debugging print
+            messages.error(request, 'Invalid username or password')
+
+    # Render the login form for both GET requests and failed POST requests
+    print("Rendering customer login form")  # Debugging print
+    return render(request, 'service/customerlogin.html', {'form': form})
 
 
 def offer_signup_view(request):
@@ -516,7 +597,7 @@ def customer_view_approved_offers(request, rate):
             enquiry.status = 'Approved'
             enquiry.save()  
             messages.success(request, 'Status changed to Approved.')
-            return JsonResponse({'success': True})
+            return redirect('render_offers_to_template') 
         except models.offer_from_api.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Offer not found with the given rate'})
     else:
@@ -525,7 +606,7 @@ def customer_view_approved_offers(request, rate):
     
 @api_view(['GET'])
 def get_approved_offers_api(request):
-    if request.method == 'GET':
+    if request.method == 'GET': 
         approved_offers = models.offer_from_api.objects.filter(status='Approved')  # Fetch all approved offers
 
         # Manually construct JSON data from the queryset
@@ -561,42 +642,32 @@ from django.db import IntegrityError
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_view_approved_request_invoice_view(request):
-    api_url = "http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=B"
-    response = requests.get(api_url)
+    models.offer_from_api.fetch_and_store_offers()
+    return redirect('render_offers_to_template')
 
-    if response.status_code == 200:
-        # Parse the JSON response
-        offers_data = response.json()
+@login_required(login_url='customerlogin')
+@user_passes_test(is_customer)
+def render_offers_to_template(request):
+    #models.offer_from_api.fetch_and_store_offers()
+    offers = models.offer_from_api.objects.all()
+    return render(request, 'service/customer_view_approved_request_invoice.html', {'offers': offers})
 
-    # Save data into the model
-        for offer in offers_data:
-            print("Processing offer:", offer)
-            try:
-                offer_instance = models.offer_from_api.objects.create(
-                    agreement_title_id=offer.get('agreement_title_id'),
-                    agreement_title=offer.get('agreement_title'),
-                    servicerequest_id=offer.get('servicerequest_id'),
-                    project_information=offer.get('project_information'),
-                    employee_name=offer.get('employee_name'),
-                    provider_name=offer.get('provider_name'),
-                    contactperson=offer.get('contactperson'),
-                    externalperson=offer.get('externalperson'),
-                    rate=offer.get('rate'),
-                    notes=offer.get('notes'),
-                    document=offer.get('document'),
-                    status=offer.get('status'),
-                    v=offer.get('__v'),
-                )
-            except IntegrityError:
-                # Handle the case where the record already exists
-                pass
-    else:
-        # Handle the error, for example, display an error message
-        offers_data = []
-
-    return render(request, 'service/customer_view_approved_request_invoice.html', {'offers': offers_data})
-
-
+@login_required(login_url='customerlogin')
+@user_passes_test(is_customer)
+def customer_delete_offers(request, rate):
+    if request.method == 'POST':
+        try:
+            offer = models.offer_from_api.objects.get(rate=rate)
+            delete_reason = request.POST.get('delete_reason', '')  # Get the deletion reason from the form
+            offer.delete()
+            models.DeletedOffer.objects.create(rate=rate, reason=delete_reason)  # Store the deletion reason
+            # Redirect after successful deletion
+            return redirect('render_offers_to_template')
+        except models.offer_from_api.DoesNotExist:
+            # Handle the case where the offer does not exist
+            pass
+    # Redirect in case of a non-POST request or offer does not exist
+    return redirect('render_offers_to_template')
 
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
@@ -611,7 +682,7 @@ def customer_add_request_view(request):
             # Fetch agreement title based on the selected ID
             agreement_id = enquiry.cleaned_data.get('agreement_title')  # Assuming the field name is 'agreement_title'
             if agreement_id:
-                api_url = f"http://35.174.107.106:3000/agreement/{agreement_id}"
+                api_url = f"https://dg4gi3uw0m2xs.cloudfront.net/agreement/{agreement_id}"
                 try:
                     response = requests.get(api_url)
                     if response.status_code == 200:

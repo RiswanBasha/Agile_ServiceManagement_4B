@@ -1,11 +1,11 @@
-from django.db import models
+from django.db import IntegrityError, models
 from django.contrib.auth.models import User
 import requests
 # Create your models here.
 class Customer(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/CustomerProfilePic/',null=True,blank=True)
-    address = models.CharField(max_length=40)
+    email = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=False)
     @property
     def get_name(self):
@@ -35,7 +35,7 @@ class offer(models.Model):
 class offer_from_api(models.Model):
     agreement_title_id = models.CharField(max_length=255)
     agreement_title = models.CharField(max_length=255)
-    servicerequest_id = models.CharField(max_length=255,null=True)
+    servicerequest_id = models.CharField(max_length=255)
     project_information = models.TextField()
     employee_name = models.CharField(max_length=255)
     provider_name = models.CharField(max_length=255)
@@ -46,9 +46,65 @@ class offer_from_api(models.Model):
     document = models.TextField()
     status = models.CharField(max_length=255)
     v = models.IntegerField()
-
+    
     def __str__(self):
         return self.agreement_title_id
+
+    @classmethod
+    def fetch_and_store_offers(cls):
+        providers = ['A', 'B', 'C', 'D']
+        base_url = "http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider="
+
+        for provider in providers:
+            api_url = f"{base_url}{provider}"
+            response = requests.get(api_url)
+
+            if response.status_code == 200:
+                offers_data = response.json()
+
+                for offer in offers_data:
+                    rate = offer.get('rate')
+
+                    # Check if this rate was marked as deleted
+                    if DeletedOffer.objects.filter(rate=rate).exists():
+                        print(f"Skipped creating offer with rate {rate} as it was previously deleted.")
+                        continue
+
+                    try:
+                        # Use get_or_create to avoid recreating an existing offer
+                        obj, created = cls.objects.get_or_create(
+                            rate=rate,
+                            defaults={
+                                'agreement_title_id': offer.get('agreement_title_id'),
+                                'agreement_title': offer.get('agreement_title'),
+                                'servicerequest_id': offer.get('servicerequest_id'),
+                                'project_information': offer.get('project_information'),
+                                'employee_name': offer.get('employee_name'),
+                                'provider_name': offer.get('provider_name'),
+                                'contactperson': offer.get('contactperson'),
+                                'externalperson': offer.get('externalperson'),
+                                'notes': offer.get('notes'),
+                                'document': offer.get('document'),
+                                'status': offer.get('status'),
+                                'v': offer.get('__v'),
+                            }
+                        )
+                        if created:
+                            print(f"Offer with rate {rate} created successfully.")
+                        else:
+                            print(f"Offer with rate {rate} already exists.")
+                    except IntegrityError as e:
+                        print(f"Could not create offer with rate {rate}: {e}")
+            else:
+                print(f"Failed to fetch offers for provider {provider}, status code: {response.status_code}")
+
+
+class DeletedOffer(models.Model):
+    rate = models.DecimalField(max_digits=10, decimal_places=2, unique=True)
+    reason = models.TextField(default="Not specified") 
+    def __str__(self):
+        return str(self.rate)
+
 
 # Define a model for approved offers
 class ApprovedOffer(models.Model):
@@ -57,6 +113,7 @@ class ApprovedOffer(models.Model):
     status = models.CharField(max_length=50)
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     # Add other fields as needed
+
 
 
 class Request(models.Model):

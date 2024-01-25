@@ -34,7 +34,7 @@ urlpatterns = [
     path('customersignup', views.customer_signup_view,name='customersignup'),
     path('offersignup', views.offer_signup_view,name='offersignup'),
 
-    path('customerlogin', LoginView.as_view(template_name='service/customerlogin.html'),name='customerlogin'),
+    path('customerlogin', views.customer_login_view,name='customerlogin'),
     path('adminlogin', LoginView.as_view(template_name='service/adminlogin.html'),name='adminlogin'),
 
 
@@ -87,11 +87,12 @@ urlpatterns = [
     path('specific-request-details/<int:request_id>/', views.get_specific_request, name='get_specific_request'),
     path('customer-delete-request/<int:pk>', views.customer_delete_request_view,name='customer-delete-request'),
     #path('customer-accept-offer/<int:pk>/', views.customer_accept_offer_view, name='customer-view-approved-offers'),
-    path('customer-view-approved-offers/<int:rate>/', views.customer_view_approved_offers, name='customer-view-approved-offers'),
+    path('customer-view-approved-offers/<str:rate>/', views.customer_view_approved_offers, name='customer-view-approved-offers'),
     path('approved-offers', views.get_approved_offers_api, name='approved-offers'),
     path('customer-view-approved-request',views.customer_view_approved_request_view,name='customer-view-approved-request'),
     path('customer-view-approved-request-invoice',views.customer_view_approved_request_invoice_view,name='customer-view-approved-request-invoice'),
-
+    path('render_offers_to_template',views.render_offers_to_template,name='render_offers_to_template'),
+    path('customer-delete-offers/<str:rate>/', views.customer_delete_offers, name='customer-delete-offers'),
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
     path('logout/', LogoutView.as_view(template_name='service/index.html'),name='logout'),
 
