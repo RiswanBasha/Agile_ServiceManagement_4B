@@ -648,9 +648,10 @@ def customer_view_approved_request_invoice_view(request):
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def render_offers_to_template(request):
+    requests=models.Request.objects.all()
     #models.offer_from_api.fetch_and_store_offers()
     offers = models.offer_from_api.objects.all()
-    return render(request, 'service/customer_view_approved_request_invoice.html', {'offers': offers})
+    return render(request, 'service/customer_view_approved_request_invoice.html', {'offers': offers,'requests':requests})
 
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
