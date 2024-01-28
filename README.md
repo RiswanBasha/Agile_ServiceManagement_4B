@@ -51,15 +51,19 @@
    - *Admin Functions*: Provide admins with the ability to manage user profiles, requests, and system settings.
 
 
-**Important Link:**
-  
-1. [Service Management Portal](http://13.48.42.106:8000/)
-2. [Register Component from Team 1](http://codexauthv2.onrender.com/api/register/)
-3. [Login Component from Team 1](http://codexauthv2.onrender.com/api/login/)
-4. [Master Agreement API from Team 2B](https://dg4gi3uw0m2xs.cloudfront.net/agreement/)
-5. [Offers API from 3B of Provider A](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=A)
-6. [Offers API from 3B of Provider B](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=B)
-7. [Offers API from 3B of Provider C](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=C)
-8. [Offers API from 3B of Provider D](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=D)
+**Website Link:**
+---> [Service Management Portal](http://13.48.42.106:8000/)
 
+**API fetched from other groups Link:**
 
+1. [Register Component from Team 1](http://codexauthv2.onrender.com/api/register/)
+2. [Login Component from Team 1](http://codexauthv2.onrender.com/api/login/)
+3. [Master Agreement API from Team 2B](https://dg4gi3uw0m2xs.cloudfront.net/agreement/)
+4. [Offers API from 3B of Provider A](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=A)
+5. [Offers API from 3B of Provider B](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=B)
+6. [Offers API from 3B of Provider C](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=C)
+7. [Offers API from 3B of Provider D](http://ec2-52-90-1-48.compute-1.amazonaws.com:4000/users/offers?provider=D)
+
+**API shared to the teams 3B,5A and 6B:**
+1. [request-details](http://13.48.42.106:8000/request-details/)
+2. [approved-offers](http://13.48.42.106:8000/approved-offers)
