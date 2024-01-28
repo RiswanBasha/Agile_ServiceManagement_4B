@@ -24,6 +24,16 @@
 
 **For Run:** : `python manage.py runserver`
 
+**You can login as user using this Login Credentials** : 
+
+username: team4B
+password: team4B
+
+**You can login as admin using this Login Credentials** : 
+
+username: amith
+password: amith
+
 ### Service Management Platform Architecture: A Comprehensive Overview
 
 1. **User Interface (UI) Layer:**
