@@ -150,40 +150,38 @@
                             </thead>
                             <tbody>
                                 {% for enq in offers %}
-                                    {% if requests.id == enq.servicerequest_id %}
-                                        <tr>
-                                            <td>{{ enq.agreement_title }}</td>
-                                            <td>{{enq.servicerequest_id}}</td>
-                                            <td>{{ enq.project_information }}</td>
-                                            <td>{{ enq.employee_name }}</td>
-                                            <td>{{ enq.provider_name }}</td>
-                                            <td>{{ enq.contactperson }}</td>
-                                            <td>{{ enq.externalperson }}</td>
-                                            <td>{{ enq.rate }}</td>
-                                            <td class="status-cell">{{ enq.status }}</td>
-                                            <!-- Check if status is not 'Approved' before rendering Accept/Delete -->
-                                            {% if enq.status != 'Approved' %}
-                                                <td>
-                                                    <form class="accept-form" method="post" action="/customer-view-approved-offers/{{ enq.rate }}/">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="rate" value="{{ enq.rate }}">
-                                                        <button type="submit" class="accept-btn">&#10003;</button>
-                                                    </form>
-                                                </td>
-                                                <td>
-                                                    <form class="delete-form" method="post" action="/customer-delete-offers/{{ enq.rate }}/">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="rate" value="{{ enq.rate }}">
-                                                        <textarea name="delete_reason" required placeholder="Enter reason for decline"></textarea>
-                                                        <button type="submit" class="delete-btn">&#10060;</button>
-                                                    </form>
-                                                </td>
-                                            {% else %}
-                                                <!-- If status is 'Approved', display nothing or a message -->
-                                                <td colspan="2"></td>
-                                            {% endif %}
-                                        </tr>
-                                    {% endif %}
+                                    <tr>
+                                        <td>{{ enq.agreement_title }}</td>
+                                        <td>{{enq.servicerequest_id}}</td>
+                                        <td>{{ enq.project_information }}</td>
+                                        <td>{{ enq.employee_name }}</td>
+                                        <td>{{ enq.provider_name }}</td>
+                                        <td>{{ enq.contactperson }}</td>
+                                        <td>{{ enq.externalperson }}</td>
+                                        <td>{{ enq.rate }}</td>
+                                        <td class="status-cell">{{ enq.status }}</td>
+                                        <!-- Check if status is not 'Approved' before rendering Accept/Delete -->
+                                        {% if enq.status != 'Approved' %}
+                                            <td>
+                                                <form class="accept-form" method="post" action="/customer-view-approved-offers/{{ enq.rate }}/">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="rate" value="{{ enq.rate }}">
+                                                    <button type="submit" class="accept-btn">&#10003;</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form class="delete-form" method="post" action="/customer-delete-offers/{{ enq.rate }}/">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="rate" value="{{ enq.rate }}">
+                                                    <textarea name="delete_reason" required placeholder="Enter reason for decline"></textarea>
+                                                    <button type="submit" class="delete-btn">&#10060;</button>
+                                                </form>
+                                            </td>
+                                        {% else %}
+                                            <!-- If status is 'Approved', display nothing or a message -->
+                                            <td colspan="2"></td>
+                                        {% endif %}
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
