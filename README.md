@@ -24,8 +24,10 @@
 
 **For Run:** : `python manage.py runserver`
 
-**You can login as user using this Login Credentials** : 
 ---------------------------------------------------------------
+
+**You can login as user using this Login Credentials** : 
+
 **username**: team4B
 
 **password**: team4B
